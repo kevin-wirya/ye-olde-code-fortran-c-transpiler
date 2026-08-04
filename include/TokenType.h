@@ -4,7 +4,7 @@
 #include<string>
 enum class TokenType {
     // keywords
-    PROGRAM,
+    PROGRAM = 1,
     END,
     SUBROUTINE,
     FUNCTION,

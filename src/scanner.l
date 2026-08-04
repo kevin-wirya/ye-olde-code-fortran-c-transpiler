@@ -70,6 +70,7 @@ int current_col = 1;
 ","                                 {current_col+=yyleng;return static_cast<int>(TokenType::COMMA);}
 
    /* literals and identifiers */
+'[^'\n]*'                           {current_col+=yyleng;return static_cast<int>(TokenType::STRING_LITERAL);}
 [0-9]+\.[0-9]*([eE][+-]?[0-9]+)?    {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
 \.[0-9]+([eE][+-]?[0-9]+)?          {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
 [0-9]+                              {current_col+=yyleng;return static_cast<int>(TokenType::INT_LITERAL);}
