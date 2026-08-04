@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\f77_transpiler.dir/objects.a
-C:\Users\ASUS\scoop\apps\gcc\current\bin\ar.exe qc CMakeFiles\f77_transpiler.dir/objects.a @CMakeFiles\f77_transpiler.dir\objects1.rsp
-C:\Users\ASUS\scoop\apps\gcc\current\bin\g++.exe -Wl,--whole-archive CMakeFiles\f77_transpiler.dir/objects.a -Wl,--no-whole-archive -o f77_transpiler.exe -Wl,--out-implib,libf77_transpiler.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\f77_transpiler.dir\linkLibs.rsp

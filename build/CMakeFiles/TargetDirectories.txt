@@ -1,3 +1,0 @@
-D:/Seleksi-IRK/ye-olde-code-fortran-c-transpiler/build/CMakeFiles/f77_transpiler.dir
-D:/Seleksi-IRK/ye-olde-code-fortran-c-transpiler/build/CMakeFiles/edit_cache.dir
-D:/Seleksi-IRK/ye-olde-code-fortran-c-transpiler/build/CMakeFiles/rebuild_cache.dir
