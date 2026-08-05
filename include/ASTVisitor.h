@@ -4,7 +4,9 @@
 class ProgramNode;
 class SubroutineNode;
 class FunctionNode;
-class VarDeclNode;
+class TypeDeclNode;
+class ArrayDeclNode;
+class CommonBlockNode;
 class AssignmentNode;
 class PrintNode;
 class IfNode;
@@ -20,7 +22,9 @@ class ASTVisitor{
         virtual void visit(ProgramNode& node)=0;
         virtual void visit(SubroutineNode& node)=0;
         virtual void visit(FunctionNode& node)=0;
-        virtual void visit(VarDeclNode& node)=0;
+        virtual void visit(TypeDeclNode& node)=0;
+        virtual void visit(ArrayDeclNode& node)=0;
+        virtual void visit(CommonBlockNode& node)=0;
         virtual void visit(AssignmentNode& node)=0;
         virtual void visit(PrintNode& node)=0;
         virtual void visit(IfNode& node)=0;
