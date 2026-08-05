@@ -2,6 +2,8 @@
 #define AST_VISITOR_H
 
 class ProgramNode;
+class SubroutineNode;
+class FunctionNode;
 class VarDeclNode;
 class AssignmentNode;
 class PrintNode;
@@ -16,6 +18,8 @@ class ASTVisitor{
     public:
         virtual ~ASTVisitor() = default;
         virtual void visit(ProgramNode& node)=0;
+        virtual void visit(SubroutineNode& node)=0;
+        virtual void visit(FunctionNode& node)=0;
         virtual void visit(VarDeclNode& node)=0;
         virtual void visit(AssignmentNode& node)=0;
         virtual void visit(PrintNode& node)=0;
