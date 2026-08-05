@@ -49,6 +49,7 @@ std::unique_ptr<ASTNode> Parser::parse(){
     else throw std::runtime_error("Syntax Error: Expected PROGRAM, SUBROUTINE, or FUNCTION at top level");
 }
 
+// main parsing
 std::unique_ptr<ASTNode> Parser::parseProgram(){
     consume(TokenType::PROGRAM,"Expected PROGRAM keyword");
     Token name_token=consume(TokenType::IDENTIFIER,"Expected program name identifier");
@@ -110,6 +111,8 @@ std::unique_ptr<ASTNode> Parser::parseFunction() {
     }
     return std::make_unique<FunctionNode>(name_token.lexeme,ret_type,std::move(params),std::move(body));
 }
+
+// declaration parsing
 std::unique_ptr<ASTNode> Parser::parseImplicitNone(){
     consume(TokenType::IMPLICIT,"Expected IMPLICIT keyword");
     consume(TokenType::NONE,"Expected NONE after IMPLICIT");
@@ -118,11 +121,11 @@ std::unique_ptr<ASTNode> Parser::parseImplicitNone(){
 
 std::unique_ptr<ASTNode> Parser::parseCommonBlock() {
     consume(TokenType::COMMON,"Expected COMMON keyword");
-    std::string blockName="";
+    std::string block_name="";
     if (match(TokenType::SLASH)){
         if (!check(TokenType::SLASH)){
             Token bName=consume(TokenType::IDENTIFIER,"Expected common block name");
-            blockName=bName.lexeme;
+            block_name=bName.lexeme;
         }
         consume(TokenType::SLASH,"Expected '/' after common block name");
     }
@@ -131,7 +134,7 @@ std::unique_ptr<ASTNode> Parser::parseCommonBlock() {
         Token v=consume(TokenType::IDENTIFIER,"Expected variable name in COMMON block");
         vars.push_back(v.lexeme);
     }while(match(TokenType::COMMA));
-    return std::make_unique<CommonBlockNode>(blockName, std::move(vars));
+    return std::make_unique<CommonBlockNode>(block_name, std::move(vars));
 }
 
 std::unique_ptr<ASTNode> Parser::parseDeclaration() {
@@ -140,7 +143,7 @@ std::unique_ptr<ASTNode> Parser::parseDeclaration() {
     else if(match(TokenType::REAL))typeName="REAL";
     else if(match(TokenType::LOGICAL))typeName="LOGICAL";
     else throw std::runtime_error("Expected type specification in declaration");
-    std::vector<std::string> scalarVars;
+    std::vector<std::string> scalar_vars;
     do{
         Token varToken=consume(TokenType::IDENTIFIER,"Expected variable name in declaration");
         if(check(TokenType::LPAREN)){
@@ -154,16 +157,117 @@ std::unique_ptr<ASTNode> Parser::parseDeclaration() {
             consume(TokenType::RPAREN,"Expected ')' after array dimensions");
             return std::make_unique<ArrayDeclNode>(varToken.lexeme,typeName,std::move(dims));
         } else {
-            scalarVars.push_back(varToken.lexeme);
+            scalar_vars.push_back(varToken.lexeme);
         }
     }while(match(TokenType::COMMA));
-    return std::make_unique<TypeDeclNode>(typeName, std::move(scalarVars));
+    return std::make_unique<TypeDeclNode>(typeName, std::move(scalar_vars));
 }
 
+// expression parsing
+std::unique_ptr<ASTNode> Parser::parseIf(){
+    consume(TokenType::IF,"Expected IF keyword");
+    consume(TokenType::LPAREN,"Expected '(' after IF");
+    auto condition=parseExpression();
+    consume(TokenType::RPAREN,"Expected ')' after IF condition");
+    consume(TokenType::THEN,"Expected THEN after IF condition");
+    std::vector<std::unique_ptr<ASTNode>> then_body;
+    std::vector<std::unique_ptr<ASTNode>> else_body;
+    while(!isAtEnd()&&!check(TokenType::ELSE)&&!check(TokenType::ENDIF)){
+        then_body.push_back(parseStatement());
+    }
+    if(match(TokenType::ELSE)){
+        while(!isAtEnd()&&!check(TokenType::ENDIF)){
+            else_body.push_back(parseStatement());
+        }
+    }
+    consume(TokenType::ENDIF,"Expected ENDIF statement");
+    return std::make_unique<IfNode>(std::move(condition),std::move(then_body),std::move(else_body));
+}
+
+std::unique_ptr<ASTNode> Parser::parseDo(){
+    consume(TokenType::DO,"Expected DO keyword");
+    Token label_token=consume(TokenType::INT_LITERAL,"Expected target label number for DO loop");
+    int target_label=std::stoi(label_token.lexeme);
+    Token var_token=consume(TokenType::IDENTIFIER,"Expected loop variable identifier");
+    consume(TokenType::ASSIGN,"Expected '=' in DO loop statement");
+    auto start_expr=parseExpression();
+    consume(TokenType::COMMA,"Expected ',' after start expression");
+    auto end_expr=parseExpression();
+    std::unique_ptr<ASTNode> step_expr=nullptr;
+    if(match(TokenType::COMMA)){
+        step_expr=parseExpression();
+    }
+    std::vector<std::unique_ptr<ASTNode>> body;
+    while(!isAtEnd()){
+        if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
+            if(std::stoi(peek().lexeme)==target_label){
+                advance();
+                if(match(TokenType::CONTINUE)){
+                    body.push_back(std::make_unique<ContinueNode>(target_label));
+                }
+                break;
+            }
+        }
+        body.push_back(parseStatement());
+    }
+    return std::make_unique<DoNode>(target_label,var_token.lexeme,std::move(start_expr),std::move(end_expr),std::move(step_expr),std::move(body));
+}
+
+std::unique_ptr<ASTNode> Parser::parseGoto() {
+    consume(TokenType::GOTO, "Expected GOTO keyword");
+    Token label_token=consume(TokenType::INT_LITERAL, "Expected label number after GOTO");
+    int label=std::stoi(label_token.lexeme);
+    return std::make_unique<GotoNode>(label);
+}
+
+std::unique_ptr<ASTNode> Parser::parseContinue() {
+    int label=0;
+    if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
+        label=std::stoi(advance().lexeme);
+    }
+    consume(TokenType::CONTINUE,"Expected CONTINUE keyword");
+    return std::make_unique<ContinueNode>(label);
+}
+
+std::unique_ptr<ASTNode> Parser::parsePrimary() {
+    if(match(TokenType::INT_LITERAL))return std::make_unique<NumberLiteralNode>(previous().lexeme, false);
+    if(match(TokenType::REAL_LITERAL))return std::make_unique<NumberLiteralNode>(previous().lexeme, true);
+    if(match(TokenType::STRING_LITERAL))return std::make_unique<StringLiteralNode>(previous().lexeme);
+    if(match(TokenType::IDENTIFIER)){
+        std::string name = previous().lexeme;
+        if(match(TokenType::LPAREN)){
+            std::vector<std::unique_ptr<ASTNode>> args;
+            if(!check(TokenType::RPAREN)){
+                do{
+                    args.push_back(parseExpression());
+                }while(match(TokenType::COMMA));
+            }
+            consume(TokenType::RPAREN,"Expected ')' after array index/args");
+            return std::make_unique<ArrayAccessNode>(name,std::move(args));
+        }
+        return std::make_unique<IdentifierNode>(name);
+    }
+    if(match(TokenType::LPAREN)){
+        auto expr=parseExpression();
+        consume(TokenType::RPAREN,"Expected ')' after expression");
+        return expr;
+    }
+    throw std::runtime_error("Syntax Error: Unexpected token in expression: " + peek().lexeme);
+}
+
+std::unique_ptr<ASTNode> Parser::parseExpression() {
+    return parsePrimary();
+}
+
+// statement parsing
 std::unique_ptr<ASTNode> Parser::parseStatement() {
     if(check(TokenType::IMPLICIT))return parseImplicitNone();
     if(check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
     if(check(TokenType::COMMON))return parseCommonBlock();
+    if(check(TokenType::IF))return parseIf();
+    if(check(TokenType::DO))return parseDo();
+    if(check(TokenType::GOTO))return parseGoto();
+    if(check(TokenType::CONTINUE))return parseContinue();
     advance();
     return nullptr;
 }
