@@ -21,6 +21,7 @@ class UnaryOpNode;
 class IdentifierNode;
 class NumberLiteralNode;
 class StringLiteralNode;
+class ArrayAccessNode;
 
 class ASTVisitor{
     public:
@@ -47,5 +48,6 @@ class ASTVisitor{
         virtual void visit(IdentifierNode& node)=0;
         virtual void visit(NumberLiteralNode& node)=0;
         virtual void visit(StringLiteralNode& node)=0;
+        virtual void visit(ArrayAccessNode& node)=0;
 };
 #endif
