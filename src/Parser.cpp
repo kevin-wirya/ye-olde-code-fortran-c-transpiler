@@ -255,19 +255,156 @@ std::unique_ptr<ASTNode> Parser::parsePrimary() {
     throw std::runtime_error("Syntax Error: Unexpected token in expression: " + peek().lexeme);
 }
 
-std::unique_ptr<ASTNode> Parser::parseExpression() {
+std::unique_ptr<ASTNode> Parser::parseExpression(){
+    return parseLogicalOr();
+}
+
+std::unique_ptr<ASTNode> Parser::parseLogicalOr(){
+    auto expr=parseLogicalAnd();
+    while(match(TokenType::DOT_OR)){
+        std::string op=previous().lexeme;
+        auto right=parseLogicalAnd();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parseLogicalAnd(){
+    auto expr=parseRelational();
+    while(match(TokenType::DOT_AND)){
+        std::string op=previous().lexeme;
+        auto right=parseRelational();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parseLogicalNot(){
+    if(match(TokenType::NOT_DOT)){
+        auto right=parseLogicalNot();
+        return std::make_unique<UnaryOpNode>(previous().lexeme,std::move(right));
+    }
+    return parseRelational();
+}
+
+std::unique_ptr<ASTNode> Parser::parseRelational(){
+    auto expr=parseAdditive();
+    while(check(TokenType::DOT_EQ)||check(TokenType::DOT_NE)||
+            check(TokenType::DOT_LT)||check(TokenType::DOT_LE)||
+            check(TokenType::DOT_GT)||check(TokenType::DOT_GE)){
+        advance();
+        std::string op=previous().lexeme;
+        auto right=parseAdditive();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parseAdditive(){
+    auto expr=parseMultiplicative();
+    while(match(TokenType::PLUS)||match(TokenType::MINUS)){
+        std::string op=previous().lexeme;
+        auto right=parseMultiplicative();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parseMultiplicative(){
+    auto expr=parsePower();
+    while(match(TokenType::STAR)||match(TokenType::SLASH)){
+        std::string op=previous().lexeme;
+        auto right=parsePower();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parsePower(){
+    auto expr=parseUnary();
+    if(match(TokenType::POWER)){
+        std::string op=previous().lexeme;
+        auto right=parsePower();
+        expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
+    }
+    return expr;
+}
+
+std::unique_ptr<ASTNode> Parser::parseUnary(){
+    if(match(TokenType::PLUS)||match(TokenType::MINUS)){
+        std::string op=previous().lexeme;
+        auto right=parseUnary();
+        return std::make_unique<UnaryOpNode>(op,std::move(right));
+    }
     return parsePrimary();
 }
 
-// statement parsing
+// statement and i/o parsing
+std::unique_ptr<ASTNode> Parser::parsePrint(){
+    consume(TokenType::PRINT,"Expected PRINT keyword");
+    std::string fmt="*";
+    if(match(TokenType::STAR))fmt="*";
+    consume(TokenType::COMMA,"Expected ',' after PRINT format specifier");
+    std::vector<std::unique_ptr<ASTNode>> exprs;
+    do{
+        exprs.push_back(parseExpression());
+    }while(match(TokenType::COMMA));
+    return std::make_unique<PrintNode>(fmt, std::move(exprs));
+}
+
+std::unique_ptr<ASTNode> Parser::parseRead() {
+    consume(TokenType::READ,"Expected READ keyword");
+    std::string fmt="*";
+    if(match(TokenType::STAR))fmt="*";
+    consume(TokenType::COMMA,"Expected ',' after READ format specifier");
+    std::vector<std::string> vars;
+    do{
+        Token v = consume(TokenType::IDENTIFIER,"Expected variable name in READ statement");
+        vars.push_back(v.lexeme);
+    }while(match(TokenType::COMMA));
+    return std::make_unique<ReadNode>(fmt, std::move(vars));
+}
+
+std::unique_ptr<ASTNode> Parser::parseAssign() {
+    Token targetToken=consume(TokenType::IDENTIFIER,"Expected variable identifier in assignment");
+    consume(TokenType::ASSIGN,"Expected '=' in assignment");
+    auto expr=parseExpression();
+    return std::make_unique<AssignNode>(targetToken.lexeme,std::move(expr));
+}
+
+std::unique_ptr<ASTNode> Parser::parseCall() {
+    consume(TokenType::CALL,"Expected CALL keyword");
+    Token subToken=consume(TokenType::IDENTIFIER,"Expected subroutine name in CALL");
+    std::vector<std::unique_ptr<ASTNode>> args;
+    if (match(TokenType::LPAREN)) {
+        if (!check(TokenType::RPAREN)) {
+            do {
+                args.push_back(parseExpression());
+            } while (match(TokenType::COMMA));
+        }
+        consume(TokenType::RPAREN,"Expected ')' after CALL arguments");
+    }
+    return std::make_unique<CallNode>(subToken.lexeme, std::move(args));
+}
+
+std::unique_ptr<ASTNode> Parser::parseReturn() {
+    consume(TokenType::RETURN,"Expected RETURN keyword");
+    return std::make_unique<ReturnNode>();
+}
+
 std::unique_ptr<ASTNode> Parser::parseStatement() {
-    if(check(TokenType::IMPLICIT))return parseImplicitNone();
-    if(check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
-    if(check(TokenType::COMMON))return parseCommonBlock();
-    if(check(TokenType::IF))return parseIf();
-    if(check(TokenType::DO))return parseDo();
-    if(check(TokenType::GOTO))return parseGoto();
-    if(check(TokenType::CONTINUE))return parseContinue();
+    if (check(TokenType::IMPLICIT))return parseImplicitNone();
+    if (check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
+    if (check(TokenType::COMMON))return parseCommonBlock();
+    if (check(TokenType::IF))return parseIf();
+    if (check(TokenType::DO))return parseDo();
+    if (check(TokenType::GOTO))return parseGoto();
+    if (check(TokenType::CONTINUE))return parseContinue();
+    if (check(TokenType::PRINT))return parsePrint();
+    if (check(TokenType::READ))return parseRead();
+    if (check(TokenType::CALL))return parseCall();
+    if (check(TokenType::RETURN))return parseReturn();
+    if (check(TokenType::IDENTIFIER))return parseAssign();
     advance();
     return nullptr;
 }

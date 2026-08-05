@@ -61,8 +61,21 @@ class Parser{
         std::unique_ptr<ASTNode> parseContinue();
         // expression parsing
         std::unique_ptr<ASTNode> parseExpression();
+        std::unique_ptr<ASTNode> parseLogicalOr();
+        std::unique_ptr<ASTNode> parseLogicalAnd();
+        std::unique_ptr<ASTNode> parseLogicalNot();
+        std::unique_ptr<ASTNode> parseRelational();
+        std::unique_ptr<ASTNode> parseAdditive();
+        std::unique_ptr<ASTNode> parseMultiplicative();
+        std::unique_ptr<ASTNode> parsePower();
+        std::unique_ptr<ASTNode> parseUnary();
         std::unique_ptr<ASTNode> parsePrimary();
-        // statement parsing
+        // statement and i/o parsing
+        std::unique_ptr<ASTNode> parsePrint();
+        std::unique_ptr<ASTNode> parseRead();
+        std::unique_ptr<ASTNode> parseAssign();
+        std::unique_ptr<ASTNode> parseCall();
+        std::unique_ptr<ASTNode> parseReturn();
         std::unique_ptr<ASTNode> parseStatement();
 };
 
