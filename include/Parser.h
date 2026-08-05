@@ -47,6 +47,10 @@ class Parser{
         Token consume(TokenType type, const std::string& error_msg);
         // main parsing
         std::unique_ptr<ASTNode> parse();
+        std::unique_ptr<ASTNode> parseProgram();
+        std::unique_ptr<ASTNode> parseSubroutine();
+        std::unique_ptr<ASTNode> parseFunction();
+        std::unique_ptr<ASTNode> parseStatement();
 };
 
 #endif 
