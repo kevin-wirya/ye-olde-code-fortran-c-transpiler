@@ -110,9 +110,60 @@ std::unique_ptr<ASTNode> Parser::parseFunction() {
     }
     return std::make_unique<FunctionNode>(name_token.lexeme,ret_type,std::move(params),std::move(body));
 }
+std::unique_ptr<ASTNode> Parser::parseImplicitNone(){
+    consume(TokenType::IMPLICIT,"Expected IMPLICIT keyword");
+    consume(TokenType::NONE,"Expected NONE after IMPLICIT");
+    return std::make_unique<ImplicitNoneNode>();
+}
+
+std::unique_ptr<ASTNode> Parser::parseCommonBlock() {
+    consume(TokenType::COMMON,"Expected COMMON keyword");
+    std::string blockName="";
+    if (match(TokenType::SLASH)){
+        if (!check(TokenType::SLASH)){
+            Token bName=consume(TokenType::IDENTIFIER,"Expected common block name");
+            blockName=bName.lexeme;
+        }
+        consume(TokenType::SLASH,"Expected '/' after common block name");
+    }
+    std::vector<std::string> vars;
+    do{
+        Token v=consume(TokenType::IDENTIFIER,"Expected variable name in COMMON block");
+        vars.push_back(v.lexeme);
+    }while(match(TokenType::COMMA));
+    return std::make_unique<CommonBlockNode>(blockName, std::move(vars));
+}
+
+std::unique_ptr<ASTNode> Parser::parseDeclaration() {
+    std::string typeName="";
+    if(match(TokenType::INTEGER))typeName="INTEGER";
+    else if(match(TokenType::REAL))typeName="REAL";
+    else if(match(TokenType::LOGICAL))typeName="LOGICAL";
+    else throw std::runtime_error("Expected type specification in declaration");
+    std::vector<std::string> scalarVars;
+    do{
+        Token varToken=consume(TokenType::IDENTIFIER,"Expected variable name in declaration");
+        if(check(TokenType::LPAREN)){
+            consume(TokenType::LPAREN,"Expected '(' for array dimensions");
+            std::vector<ArrayDimension> dims;
+            do{
+                Token upperToken=consume(TokenType::INT_LITERAL,"Expected integer dimension size");
+                int upper=std::stoi(upperToken.lexeme);
+                dims.push_back(ArrayDimension(upper));
+            }while(match(TokenType::COMMA));
+            consume(TokenType::RPAREN,"Expected ')' after array dimensions");
+            return std::make_unique<ArrayDeclNode>(varToken.lexeme,typeName,std::move(dims));
+        } else {
+            scalarVars.push_back(varToken.lexeme);
+        }
+    }while(match(TokenType::COMMA));
+    return std::make_unique<TypeDeclNode>(typeName, std::move(scalarVars));
+}
 
 std::unique_ptr<ASTNode> Parser::parseStatement() {
-    // will be implemented later
+    if(check(TokenType::IMPLICIT))return parseImplicitNone();
+    if(check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
+    if(check(TokenType::COMMON))return parseCommonBlock();
     advance();
     return nullptr;
 }

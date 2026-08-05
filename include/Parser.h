@@ -51,6 +51,10 @@ class Parser{
         std::unique_ptr<ASTNode> parseSubroutine();
         std::unique_ptr<ASTNode> parseFunction();
         std::unique_ptr<ASTNode> parseStatement();
+        // declaration parsing
+        std::unique_ptr<ASTNode> parseImplicitNone();
+        std::unique_ptr<ASTNode> parseDeclaration();
+        std::unique_ptr<ASTNode> parseCommonBlock();        
 };
 
 #endif 
