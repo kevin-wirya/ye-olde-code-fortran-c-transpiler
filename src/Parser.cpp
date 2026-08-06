@@ -6,6 +6,11 @@ Token Parser::peek()const{
     return tokens[current];
 }
 
+TokenType Parser::peekNextType()const{
+    if(current+1>=tokens.size())return TokenType::TOKEN_EOF;
+    return tokens[current+1].type;
+}
+
 Token Parser::previous()const{
     if(current==0)return Token(TokenType::TOKEN_EOF,"",0,0);
     return tokens[current-1];
@@ -36,30 +41,90 @@ Token Parser::advance(){
 Token Parser::consume(TokenType type, const std::string& error_msg){
     if(check(type))return advance();
     Token err_token=peek();
-    std::string full_error = "Syntax Error [Line " + std::to_string(err_token.line) + 
-                            ", Column " + std::to_string(err_token.column) + "]: " + 
-                            error_msg + " (Found '" + err_token.lexeme + "')";
-    throw std::runtime_error(full_error);
+    std::string full_error="Syntax Error [Line "+std::to_string(err_token.line)+ 
+                            ", Column "+std::to_string(err_token.column)+"]: "+ 
+                            error_msg+" (Found '"+err_token.lexeme+"')";
+    syntax_errors.push_back(full_error);
+    throw ParseError(full_error);
+}
+
+void Parser::synchronize(){
+    if(isAtEnd())return;
+    advance();
+    while(!isAtEnd()){
+        if(previous().type==TokenType::END)return;
+        switch(peek().type){
+            case TokenType::PROGRAM:
+            case TokenType::SUBROUTINE:
+            case TokenType::FUNCTION:
+            case TokenType::INTEGER:
+            case TokenType::REAL:
+            case TokenType::LOGICAL:
+            case TokenType::IF:
+            case TokenType::DO:
+            case TokenType::GOTO:
+            case TokenType::CONTINUE:
+            case TokenType::PRINT:
+            case TokenType::READ:
+            case TokenType::CALL:
+            case TokenType::RETURN:
+            case TokenType::END:
+                return;
+            default:
+                advance();
+        }
+    }
 }
 
 std::unique_ptr<ASTNode> Parser::parse(){
-    if(check(TokenType::PROGRAM))return parseProgram();
-    else if(check(TokenType::SUBROUTINE))return parseSubroutine();
-    else if(check(TokenType::FUNCTION)||check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseFunction();
-    else throw std::runtime_error("Syntax Error: Expected PROGRAM, SUBROUTINE, or FUNCTION at top level");
+    try{
+        if(check(TokenType::PROGRAM))return parseProgram();
+        else if(check(TokenType::SUBROUTINE))return parseSubroutine();
+        else if(check(TokenType::FUNCTION)||check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseFunction();
+        else{
+            Token err_token=peek();
+            std::string full_error="Syntax Error: Expected PROGRAM, SUBROUTINE, or FUNCTION at top level (Found '"+err_token.lexeme+"')";
+            syntax_errors.push_back(full_error);
+            return nullptr;
+        }
+    }catch(const ParseError&){
+        synchronize();
+        return nullptr;
+    }
 }
 
 // main parsing
 std::unique_ptr<ASTNode> Parser::parseProgram(){
-    consume(TokenType::PROGRAM,"Expected PROGRAM keyword");
-    Token name_token=consume(TokenType::IDENTIFIER,"Expected program name identifier");
-    std::vector<std::unique_ptr<ASTNode>> body;
-    while(!isAtEnd()&&!check(TokenType::END)){
-        body.push_back(parseStatement());
+    try{
+        consume(TokenType::PROGRAM,"Expected PROGRAM keyword");
+        Token name_token=consume(TokenType::IDENTIFIER,"Expected program name identifier");
+        std::vector<std::unique_ptr<ASTNode>> body;
+        while(!isAtEnd()&&!check(TokenType::END)){
+            try{
+                auto stmt=parseStatement();
+                if(stmt)body.push_back(std::move(stmt));
+            }catch(const ParseError&){
+                synchronize();
+            }
+        }
+        consume(TokenType::END,"Expected END statement at program closure");
+        if(match(TokenType::PROGRAM))match(TokenType::IDENTIFIER);
+        while(!isAtEnd()){
+            try{
+                if(check(TokenType::SUBROUTINE)){
+                    body.push_back(parseSubroutine());
+                }else if(check(TokenType::FUNCTION)||(check(TokenType::INTEGER)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::REAL)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::LOGICAL)&&peekNextType()==TokenType::FUNCTION)){
+                    body.push_back(parseFunction());
+                }else break;
+            }catch(const ParseError&){
+                synchronize();
+            }
+        }
+        return std::make_unique<ProgramNode>(name_token.lexeme,std::move(body));
+    }catch(const ParseError&){
+        synchronize();
+        return nullptr;
     }
-    consume(TokenType::END, "Expected END statement at program closure");
-    if(match(TokenType::PROGRAM))match(TokenType::IDENTIFIER);
-    return std::make_unique<ProgramNode>(name_token.lexeme,std::move(body));
 }
 
 std::unique_ptr<ASTNode> Parser::parseSubroutine() {

@@ -1,0 +1,57 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST5        program      VOID      0     1     0     0     0    
+5     X            variable     REAL      0     1     0     0     0    
+6     Y            variable     REAL      0     1     0     4     5    
+7     Z            variable     REAL      0     1     0     8     6    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST5        7     0     0     12   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST5
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] REAL: X, Y, Z
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 2.5E1 (type: REAL)
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [NumberLiteralNode] 3.0D-1 (type: REAL)
+├── [AssignNode] Z =
+│   └── Value:
+│       └── [BinaryOpNode] - (type: REAL)
+│           ├── [BinaryOpNode] + (type: REAL)
+│           │   ├── [BinaryOpNode] ** (type: REAL)
+│           │   │   ├── [IdentifierNode] X (type: REAL)
+│           │   │   └── [NumberLiteralNode] 2 (type: INTEGER)
+│           │   └── [BinaryOpNode] / (type: REAL)
+│           │       ├── [BinaryOpNode] * (type: REAL)
+│           │       │   ├── [IdentifierNode] Y (type: REAL)
+│           │       │   └── [NumberLiteralNode] 5.0 (type: REAL)
+│           │       └── [NumberLiteralNode] 2.0 (type: REAL)
+│           └── [NumberLiteralNode] 1.0 (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] Z (type: REAL)
+├── [GotoNode] Target: 99
+├── [PrintNode] Format: *
+│   └── [StringLiteralNode] 'This is skipped' (type: STRING)
+└── [ContinueNode] Label: 99
+===============================================

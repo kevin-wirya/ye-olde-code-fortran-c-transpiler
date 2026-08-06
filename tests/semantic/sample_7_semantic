@@ -1,0 +1,53 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST7        program      VOID      0     1     0     0     0    
+5     X            variable     REAL      0     1     0     0     0    
+6     Y            variable     REAL      0     1     0     4     5    
+7     CALC         variable     REAL      0     1     0     8     6    
+8     CALC         function     REAL      1     1     0     0     0    
+9     VAL          variable     REAL      0     1     1     0     0    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST7        7     0     0     12   
+1     CALC         9     0     0     4    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST7
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] REAL: X, Y, CALC
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 5.0 (type: REAL)
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [ArrayAccessNode] CALC (type: REAL)
+│           └── [IdentifierNode] X (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] Y (type: REAL)
+└── [FunctionNode] CALC -> REAL(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] REAL: VAL
+    ├── [AssignNode] CALC =
+    │   └── Value:
+    │       └── [BinaryOpNode] ** (type: REAL)
+    │           ├── [IdentifierNode] VAL (type: REAL)
+    │           └── [NumberLiteralNode] 2.0 (type: REAL)
+    └── [ReturnNode]
+===============================================

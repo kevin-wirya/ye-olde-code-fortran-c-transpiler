@@ -1,0 +1,7 @@
+[ProgramNode] ERR3
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: A
+├── [TypeDeclNode] REAL: A
+└── [AssignNode] A =
+    └── Value:
+        └── [NumberLiteralNode] 5

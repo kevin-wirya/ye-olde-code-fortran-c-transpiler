@@ -31,14 +31,20 @@
 #include <string>
 #include <stdexcept>
 
+struct ParseError:public std::runtime_error{using std::runtime_error::runtime_error;};
 class Parser{
     private:
         std::vector<Token> tokens;
         size_t current=0;
+        std::vector<std::string> syntax_errors;
     public:
         explicit Parser(std::vector<Token> toks):tokens(std::move(toks)){}
+        const std::vector<std::string>& getErrors() const{return syntax_errors;}
+        bool hasErrors() const{return !syntax_errors.empty();}
+        void synchronize();
         // helper utils
         Token peek() const;
+        TokenType peekNextType() const;
         Token previous() const;
         bool isAtEnd() const;
         bool check(TokenType type) const;
@@ -79,4 +85,4 @@ class Parser{
         std::unique_ptr<ASTNode> parseStatement();
 };
 
-#endif 
+#endif

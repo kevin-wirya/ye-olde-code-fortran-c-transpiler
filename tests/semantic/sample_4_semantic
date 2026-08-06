@@ -1,0 +1,63 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST4        program      VOID      0     1     0     0     0    
+5     FLAG         variable     LOGICAL   0     1     0     0     0    
+6     RESULT       variable     LOGICAL   0     1     0     4     5    
+7     A            variable     INTEGER   0     1     0     8     6    
+8     B            variable     INTEGER   0     1     0     12    7    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST4        8     0     0     16   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST4
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] LOGICAL: FLAG, RESULT
+├── [TypeDeclNode] INTEGER: A, B
+├── [AssignNode] A =
+│   └── Value:
+│       └── [NumberLiteralNode] 5 (type: INTEGER)
+├── [AssignNode] B =
+│   └── Value:
+│       └── [NumberLiteralNode] 10 (type: INTEGER)
+├── [AssignNode] FLAG =
+│   └── Value:
+│       └── [StringLiteralNode] .TRUE. (type: STRING)
+└── [IfNode]
+    ├── Condition:
+    │   └── [BinaryOpNode] .AND. (type: LOGICAL)
+    │       ├── [BinaryOpNode] .LT. (type: LOGICAL)
+    │       │   ├── [IdentifierNode] A (type: INTEGER)
+    │       │   └── [IdentifierNode] B (type: INTEGER)
+    │       └── [IdentifierNode] FLAG (type: LOGICAL)
+    ├── Then:
+    │   ├── [AssignNode] RESULT =
+    │   │   └── Value:
+    │   │       └── [UnaryOpNode] .FALSE. (type: STRING)
+    │   │           └── [StringLiteralNode] .FALSE. (type: STRING)
+    │   └── [PrintNode] Format: *
+    │       └── [StringLiteralNode] 'A is less than B' (type: STRING)
+    └── Else:
+        ├── [AssignNode] RESULT =
+        │   └── Value:
+        │       └── [StringLiteralNode] .FALSE. (type: STRING)
+        └── [PrintNode] Format: *
+            └── [StringLiteralNode] 'A is >= B' (type: STRING)
+===============================================

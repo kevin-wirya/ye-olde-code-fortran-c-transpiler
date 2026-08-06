@@ -1,33 +1,33 @@
 [ProgramNode] TEST4
-  [ImplicitNoneNode]
-  [TypeDeclNode] LOGICAL: FLAG, RESULT
-  [TypeDeclNode] INTEGER: A, B
-  [AssignNode] A =
-    Value:
-      [NumberLiteralNode] 5
-  [AssignNode] B =
-    Value:
-      [NumberLiteralNode] 10
-  [AssignNode] FLAG =
-    Value:
-      [StringLiteralNode] .TRUE.
-  [IfNode]
-    Condition:
-      [BinaryOpNode] .AND.
-        [BinaryOpNode] .LT.
-          [IdentifierNode] A
-          [IdentifierNode] B
-        [IdentifierNode] FLAG
-    Then:
-      [AssignNode] RESULT =
-        Value:
-          [UnaryOpNode] .FALSE.
-            [StringLiteralNode] .FALSE.
-      [PrintNode] Format: *
-        [StringLiteralNode] 'A is less than B'
-    Else:
-      [AssignNode] RESULT =
-        Value:
-          [StringLiteralNode] .FALSE.
-      [PrintNode] Format: *
-        [StringLiteralNode] 'A is >= B'
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] LOGICAL: FLAG, RESULT
+├── [TypeDeclNode] INTEGER: A, B
+├── [AssignNode] A =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+├── [AssignNode] B =
+│   └── Value:
+│       └── [NumberLiteralNode] 10
+├── [AssignNode] FLAG =
+│   └── Value:
+│       └── [StringLiteralNode] .TRUE.
+└── [IfNode]
+    ├── Condition:
+    │   └── [BinaryOpNode] .AND.
+    │       ├── [BinaryOpNode] .LT.
+    │       │   ├── [IdentifierNode] A
+    │       │   └── [IdentifierNode] B
+    │       └── [IdentifierNode] FLAG
+    ├── Then:
+    │   ├── [AssignNode] RESULT =
+    │   │   └── Value:
+    │   │       └── [UnaryOpNode] .FALSE.
+    │   │           └── [StringLiteralNode] .FALSE.
+    │   └── [PrintNode] Format: *
+    │       └── [StringLiteralNode] 'A is less than B'
+    └── Else:
+        ├── [AssignNode] RESULT =
+        │   └── Value:
+        │       └── [StringLiteralNode] .FALSE.
+        └── [PrintNode] Format: *
+            └── [StringLiteralNode] 'A is >= B'

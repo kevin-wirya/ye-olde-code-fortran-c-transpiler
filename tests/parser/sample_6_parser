@@ -1,13 +1,32 @@
 [ProgramNode] TEST6
-  [ImplicitNoneNode]
-  [ArrayDeclNode] 5)
-  [TypeDeclNode] INTEGER: N
-  [AssignNode] N =
-    Value:
-      [NumberLiteralNode] 5
-  [CallNode] Subroutine: FILL
-    [IdentifierNode] ARR
-    [IdentifierNode] N
-  [PrintNode] Format: *
-    [ArrayAccessNode] ARR
-      [NumberLiteralNode] 1
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER ARR(5)
+├── [TypeDeclNode] INTEGER: N
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+├── [CallNode] Subroutine: FILL
+│   ├── [IdentifierNode] ARR
+│   └── [IdentifierNode] N
+├── [PrintNode] Format: *
+│   └── [ArrayAccessNode] ARR
+│       └── [NumberLiteralNode] 1
+└── [SubroutineNode] FILL(A, SZ)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: SZ, I
+    ├── [ArrayDeclNode] INTEGER A(SZ)
+    ├── [DoNode] Label:100, LoopVar:I
+    │   ├── Start:
+    │   │   └── [NumberLiteralNode] 1
+    │   ├── End:
+    │   │   └── [IdentifierNode] SZ
+    │   └── Body:
+    │       ├── [AssignNode] A(<index>) =
+    │       │   ├── Indices:
+    │       │   │   └── [IdentifierNode] I
+    │       │   └── Value:
+    │       │       └── [BinaryOpNode] *
+    │       │           ├── [IdentifierNode] I
+    │       │           └── [NumberLiteralNode] 10
+    │       └── [ContinueNode] Label: 100
+    └── [ReturnNode]

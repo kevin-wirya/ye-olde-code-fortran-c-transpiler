@@ -1,0 +1,51 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST9        program      VOID      0     1     0     0     0    
+5     G1           variable     INTEGER   0     1     0     0     0    
+6     G2           variable     INTEGER   0     1     0     4     5    
+7     PRTGLB       subroutine   VOID      1     1     0     0     0    
+8     G1           variable     INTEGER   0     1     1     0     0    
+9     G2           variable     INTEGER   0     1     1     4     8    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST9        6     0     0     8    
+1     PRTGLB       9     0     0     8    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST9
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: G1, G2
+├── [CommonBlockNode] /GLOBALS/: G1, G2
+├── [AssignNode] G1 =
+│   └── Value:
+│       └── [NumberLiteralNode] 10 (type: INTEGER)
+├── [AssignNode] G2 =
+│   └── Value:
+│       └── [NumberLiteralNode] 20 (type: INTEGER)
+├── [CallNode] Subroutine: PRTGLB
+└── [SubroutineNode] PRTGLB()
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: G1, G2
+    ├── [CommonBlockNode] /GLOBALS/: G1, G2
+    ├── [PrintNode] Format: *
+    │   ├── [IdentifierNode] G1 (type: INTEGER)
+    │   └── [IdentifierNode] G2 (type: INTEGER)
+    └── [ReturnNode]
+===============================================

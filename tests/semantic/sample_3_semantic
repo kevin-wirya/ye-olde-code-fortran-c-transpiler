@@ -1,0 +1,57 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST3        program      VOID      0     1     0     0     0    
+5     MATRIX       array        INTEGER   0     1     0     0     0    
+6     I            variable     INTEGER   0     1     0     36    5    
+7     J            variable     INTEGER   0     1     0     40    6    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST3        7     0     0     44   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+0     MATRIX       INTEGER   INTEGER   0     1     3     4     36   
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST3
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER MATRIX(3, 3)
+├── [TypeDeclNode] INTEGER: I, J
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   ├── End:
+│   │   └── [NumberLiteralNode] 3 (type: INTEGER)
+│   └── Body:
+│       ├── [DoNode] Label:20, LoopVar:J
+│       │   ├── Start:
+│       │   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│       │   ├── End:
+│       │   │   └── [NumberLiteralNode] 3 (type: INTEGER)
+│       │   └── Body:
+│       │       ├── [AssignNode] MATRIX(<index>, <index>) =
+│       │       │   ├── Indices:
+│       │       │   │   ├── [IdentifierNode] I (type: INTEGER)
+│       │       │   │   └── [IdentifierNode] J (type: INTEGER)
+│       │       │   └── Value:
+│       │       │       └── [BinaryOpNode] * (type: INTEGER)
+│       │       │           ├── [IdentifierNode] I (type: INTEGER)
+│       │       │           └── [IdentifierNode] J (type: INTEGER)
+│       │       └── [ContinueNode] Label: 20
+│       └── [ContinueNode] Label: 10
+└── [PrintNode] Format: *
+    └── [StringLiteralNode] 'Matrix init done' (type: STRING)
+===============================================

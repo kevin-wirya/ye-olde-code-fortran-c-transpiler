@@ -1,0 +1,43 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     SAMPLE       program      VOID      0     1     0     0     0    
+5     N            variable     INTEGER   0     1     0     0     0    
+6     I            variable     INTEGER   0     1     0     4     5    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     SAMPLE       6     0     0     8    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] SAMPLE
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N, I
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5 (type: INTEGER)
+└── [DoNode] Label:10, LoopVar:I
+    ├── Start:
+    │   └── [NumberLiteralNode] 1 (type: INTEGER)
+    ├── End:
+    │   └── [IdentifierNode] N (type: INTEGER)
+    └── Body:
+        ├── [PrintNode] Format: *
+        │   └── [IdentifierNode] I (type: INTEGER)
+        └── [ContinueNode] Label: 10
+===============================================

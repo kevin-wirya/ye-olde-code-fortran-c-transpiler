@@ -1,0 +1,12 @@
+[ProgramNode] ERR4
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: X
+├── [CallNode] Subroutine: FOO
+│   └── [IdentifierNode] X
+└── [SubroutineNode] FOO(A, B)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: A, B
+    ├── [PrintNode] Format: *
+    │   ├── [IdentifierNode] A
+    │   └── [IdentifierNode] B
+    └── [ReturnNode]

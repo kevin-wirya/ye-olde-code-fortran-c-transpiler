@@ -1,0 +1,9 @@
+====== SYNTAX ERRORS ======
+[Error] Syntax Error [Line 6, Column 16]: Expected '=' in DO loop statement (Found '1')
+===========================
+[ProgramNode] ERR10
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: I
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] I
+└── [ContinueNode] Label: 10

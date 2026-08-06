@@ -1,28 +1,28 @@
 [ProgramNode] TEST3
-  [ImplicitNoneNode]
-  [ArrayDeclNode] 3, 3)
-  [TypeDeclNode] INTEGER: I, J
-  [DoNode] Label:10, LoopVar:I
-    Start:
-      [NumberLiteralNode] 1
-    End:
-      [NumberLiteralNode] 3
-    Body:
-      [DoNode] Label:20, LoopVar:J
-        Start:
-          [NumberLiteralNode] 1
-        End:
-          [NumberLiteralNode] 3
-        Body:
-          [AssignNode] MATRIX(<index>, <index>) =
-            Indices:
-              [IdentifierNode] I
-              [IdentifierNode] J
-            Value:
-              [BinaryOpNode] *
-                [IdentifierNode] I
-                [IdentifierNode] J
-          [ContinueNode] Label: 20
-      [ContinueNode] Label: 10
-  [PrintNode] Format: *
-    [StringLiteralNode] 'Matrix init done'
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER MATRIX(3, 3)
+├── [TypeDeclNode] INTEGER: I, J
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1
+│   ├── End:
+│   │   └── [NumberLiteralNode] 3
+│   └── Body:
+│       ├── [DoNode] Label:20, LoopVar:J
+│       │   ├── Start:
+│       │   │   └── [NumberLiteralNode] 1
+│       │   ├── End:
+│       │   │   └── [NumberLiteralNode] 3
+│       │   └── Body:
+│       │       ├── [AssignNode] MATRIX(<index>, <index>) =
+│       │       │   ├── Indices:
+│       │       │   │   ├── [IdentifierNode] I
+│       │       │   │   └── [IdentifierNode] J
+│       │       │   └── Value:
+│       │       │       └── [BinaryOpNode] *
+│       │       │           ├── [IdentifierNode] I
+│       │       │           └── [IdentifierNode] J
+│       │       └── [ContinueNode] Label: 20
+│       └── [ContinueNode] Label: 10
+└── [PrintNode] Format: *
+    └── [StringLiteralNode] 'Matrix init done'

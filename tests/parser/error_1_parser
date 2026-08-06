@@ -1,0 +1,5 @@
+[ProgramNode] ERR1
+├── [TypeDeclNode] INTEGER: N
+└── [AssignNode] N =
+    └── Value:
+        └── [NumberLiteralNode] 5

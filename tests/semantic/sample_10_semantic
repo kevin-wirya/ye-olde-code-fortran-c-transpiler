@@ -1,0 +1,79 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST10       program      VOID      0     1     0     0     0    
+5     N            variable     INTEGER   0     1     0     0     0    
+6     I            variable     INTEGER   0     1     0     4     5    
+7     SUM          variable     INTEGER   0     1     0     8     6    
+8     X            array        REAL      0     1     0     12    7    
+9     DONE         variable     LOGICAL   0     1     0     52    8    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST10       9     0     0     56   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+0     X            INTEGER   REAL      0     1     10    4     40   
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST10
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N, I, SUM
+├── [ArrayDeclNode] REAL X(10)
+├── [TypeDeclNode] LOGICAL: DONE
+├── [CommonBlockNode] /STATE/: DONE
+├── [ReadNode] Format: * Vars: N
+├── [AssignNode] SUM =
+│   └── Value:
+│       └── [NumberLiteralNode] 0 (type: INTEGER)
+├── [AssignNode] DONE =
+│   └── Value:
+│       └── [StringLiteralNode] .FALSE. (type: STRING)
+├── [DoNode] Label:50, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   ├── End:
+│   │   └── [IdentifierNode] N (type: INTEGER)
+│   └── Body:
+│       ├── [AssignNode] X(<index>) =
+│       │   ├── Indices:
+│       │   │   └── [IdentifierNode] I (type: INTEGER)
+│       │   └── Value:
+│       │       └── [BinaryOpNode] * (type: REAL)
+│       │           ├── [NumberLiteralNode] 1.0E0 (type: REAL)
+│       │           └── [IdentifierNode] I (type: INTEGER)
+│       ├── [AssignNode] SUM =
+│       │   └── Value:
+│       │       └── [BinaryOpNode] + (type: INTEGER)
+│       │           ├── [IdentifierNode] SUM (type: INTEGER)
+│       │           └── [IdentifierNode] I (type: INTEGER)
+│       ├── [IfNode]
+│       │   ├── Condition:
+│       │   │   └── [BinaryOpNode] .GE. (type: LOGICAL)
+│       │   │       ├── [IdentifierNode] SUM (type: INTEGER)
+│       │   │       └── [NumberLiteralNode] 100 (type: INTEGER)
+│       │   └── Then:
+│       │       ├── [AssignNode] DONE =
+│       │       │   └── Value:
+│       │       │       └── [StringLiteralNode] .TRUE. (type: STRING)
+│       │       └── [GotoNode] Target: 999
+│       └── [ContinueNode] Label: 50
+├── [ContinueNode] Label: 999
+└── [PrintNode] Format: *
+    ├── [StringLiteralNode] 'SUM:' (type: STRING)
+    ├── [IdentifierNode] SUM (type: INTEGER)
+    ├── [StringLiteralNode] 'DONE:' (type: STRING)
+    └── [IdentifierNode] DONE (type: LOGICAL)
+===============================================

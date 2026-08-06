@@ -1,0 +1,12 @@
+[ProgramNode] ERR6
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: A, B
+├── [CommonBlockNode] /BLK/: A, B
+├── [CallNode] Subroutine: SUB
+└── [SubroutineNode] SUB()
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: X
+    ├── [CommonBlockNode] /BLK/: X
+    ├── [PrintNode] Format: *
+    │   └── [IdentifierNode] X
+    └── [ReturnNode]

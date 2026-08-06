@@ -1,0 +1,9 @@
+[ProgramNode] ERR2
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+└── [AssignNode] X =
+    └── Value:
+        └── [NumberLiteralNode] 10

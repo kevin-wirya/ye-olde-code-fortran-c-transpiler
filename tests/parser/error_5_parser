@@ -1,0 +1,18 @@
+[ProgramNode] ERR5
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: X, Y
+├── [TypeDeclNode] LOGICAL: RES
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [NumberLiteralNode] 10
+└── [IfNode]
+    ├── Condition:
+    │   └── [BinaryOpNode] .AND.
+    │       ├── [IdentifierNode] X
+    │       └── [IdentifierNode] Y
+    └── Then:
+        └── [PrintNode] Format: *
+            └── [StringLiteralNode] 'BAD'

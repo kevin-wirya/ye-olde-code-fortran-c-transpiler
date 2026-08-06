@@ -1,14 +1,15 @@
 [ProgramNode] SAMPLE
-  [ImplicitNoneNode]
-  [TypeDeclNode] INTEGER: N, I
-  [AssignNode] N =
-    [NumberLiteralNode] 5
-  [DoNode] Label:10, LoopVar:I
-    Start:
-      [NumberLiteralNode] 1
-    End:
-      [IdentifierNode] N
-    Body:
-      [PrintNode] Format: *
-        [IdentifierNode] I
-      [ContinueNode] Label: 10
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N, I
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+└── [DoNode] Label:10, LoopVar:I
+    ├── Start:
+    │   └── [NumberLiteralNode] 1
+    ├── End:
+    │   └── [IdentifierNode] N
+    └── Body:
+        ├── [PrintNode] Format: *
+        │   └── [IdentifierNode] I
+        └── [ContinueNode] Label: 10

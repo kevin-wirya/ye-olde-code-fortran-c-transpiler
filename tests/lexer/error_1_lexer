@@ -1,0 +1,8 @@
+[Line 3] PROGRAM : "PROGRAM"
+[Line 3] IDENTIFIER : "ERR1"
+[Line 4] INTEGER : "INTEGER"
+[Line 4] IDENTIFIER : "N"
+[Line 5] IDENTIFIER : "N"
+[Line 5] = : "="
+[Line 5] INT_LITERAL : "5"
+[Line 6] END : "END"

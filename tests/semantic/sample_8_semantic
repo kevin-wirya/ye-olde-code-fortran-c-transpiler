@@ -1,0 +1,54 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST8        program      VOID      0     1     0     0     0    
+5     RES          variable     INTEGER   0     1     0     0     0    
+6     MYFUNC       variable     INTEGER   0     1     0     4     5    
+7     N            variable     INTEGER   0     1     0     8     6    
+8     MYFUNC       function     REAL      1     1     0     0     0    
+9     MYFUNC       variable     INTEGER   0     1     1     0     0    
+10    VAL          variable     INTEGER   0     1     1     4     9    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST8        7     0     0     12   
+1     MYFUNC       10    0     0     8    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST8
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: RES, MYFUNC, N
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 4 (type: INTEGER)
+├── [AssignNode] RES =
+│   └── Value:
+│       └── [ArrayAccessNode] MYFUNC (type: INTEGER)
+│           └── [IdentifierNode] N (type: INTEGER)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] RES (type: INTEGER)
+└── [FunctionNode] MYFUNC -> REAL(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: MYFUNC, VAL
+    ├── [AssignNode] MYFUNC =
+    │   └── Value:
+    │       └── [BinaryOpNode] * (type: INTEGER)
+    │           ├── [IdentifierNode] VAL (type: INTEGER)
+    │           └── [NumberLiteralNode] 3 (type: INTEGER)
+    └── [ReturnNode]
+===============================================

@@ -1,0 +1,11 @@
+====== SYNTAX ERRORS ======
+[Error] Syntax Error [Line 7, Column 11]: Expected '(' after IF (Found 'X')
+===========================
+[ProgramNode] ERR9
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: X
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+└── [PrintNode] Format: *
+    └── [IdentifierNode] X

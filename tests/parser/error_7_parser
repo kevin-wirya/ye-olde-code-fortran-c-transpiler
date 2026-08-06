@@ -1,0 +1,3 @@
+====== SYNTAX ERRORS ======
+[Error] Syntax Error: Expected PROGRAM, SUBROUTINE, or FUNCTION at top level (Found 'IMPLICIT')
+===========================

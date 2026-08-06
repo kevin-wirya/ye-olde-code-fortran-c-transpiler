@@ -1,12 +1,21 @@
 [ProgramNode] TEST7
-  [ImplicitNoneNode]
-  [TypeDeclNode] REAL: X, Y, CALC
-  [AssignNode] X =
-    Value:
-      [NumberLiteralNode] 5.0
-  [AssignNode] Y =
-    Value:
-      [ArrayAccessNode] CALC
-        [IdentifierNode] X
-  [PrintNode] Format: *
-    [IdentifierNode] Y
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] REAL: X, Y, CALC
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 5.0
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [ArrayAccessNode] CALC
+│           └── [IdentifierNode] X
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] Y
+└── [FunctionNode] CALC -> REAL(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] REAL: VAL
+    ├── [AssignNode] CALC =
+    │   └── Value:
+    │       └── [BinaryOpNode] **
+    │           ├── [IdentifierNode] VAL
+    │           └── [NumberLiteralNode] 2.0
+    └── [ReturnNode]

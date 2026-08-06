@@ -1,12 +1,21 @@
 [ProgramNode] TEST8
-  [ImplicitNoneNode]
-  [TypeDeclNode] INTEGER: RES, MYFUNC, N
-  [AssignNode] N =
-    Value:
-      [NumberLiteralNode] 4
-  [AssignNode] RES =
-    Value:
-      [ArrayAccessNode] MYFUNC
-        [IdentifierNode] N
-  [PrintNode] Format: *
-    [IdentifierNode] RES
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: RES, MYFUNC, N
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 4
+├── [AssignNode] RES =
+│   └── Value:
+│       └── [ArrayAccessNode] MYFUNC
+│           └── [IdentifierNode] N
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] RES
+└── [FunctionNode] MYFUNC -> REAL(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: MYFUNC, VAL
+    ├── [AssignNode] MYFUNC =
+    │   └── Value:
+    │       └── [BinaryOpNode] *
+    │           ├── [IdentifierNode] VAL
+    │           └── [NumberLiteralNode] 3
+    └── [ReturnNode]
