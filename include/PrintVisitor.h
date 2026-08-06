@@ -92,7 +92,7 @@ public:
 
     void visit(ArrayDeclNode& node) override {
         printIndent();
-        os<<"[ArrayDeclNode] ";
+        os<<"[ArrayDeclNode] "<<node.type_name<<" "<<node.array_name<<"(";
         for(size_t i=0;i<node.dimensions.size();++i){
             os<<node.dimensions[i].upper_bound<<(i+1<node.dimensions.size()?", ":"");
         }
@@ -162,9 +162,31 @@ public:
 
     void visit(AssignNode& node) override {
         printIndent();
-        os<<"[AssignNode] "<<node.target_variable<<" =\n";
+        if(node.index_expressions.empty()){
+            os<<"[AssignNode] "<<node.target_variable<<" =\n";
+        }else{
+            os<<"[AssignNode] "<<node.target_variable<<"(";
+            for(size_t i=0;i<node.index_expressions.size();++i){
+                if(i>0) os<<", ";
+                os<<"<index>";
+            }
+            os<<") =\n";
+        }
+        indent++;
+        if(!node.index_expressions.empty()){
+            printIndent();
+            os<<"Indices:\n";
+            indent++;
+            for(auto& idx:node.index_expressions){
+                if(idx)idx->accept(*this);
+            }
+            indent--;
+        }
+        printIndent();
+        os<<"Value:\n";
         indent++;
         if(node.expression)node.expression->accept(*this);
+        indent--;
         indent--;
     }
 

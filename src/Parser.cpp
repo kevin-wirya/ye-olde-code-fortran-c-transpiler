@@ -45,7 +45,7 @@ Token Parser::consume(TokenType type, const std::string& error_msg){
 std::unique_ptr<ASTNode> Parser::parse(){
     if(check(TokenType::PROGRAM))return parseProgram();
     else if(check(TokenType::SUBROUTINE))return parseSubroutine();
-    else if(check(TokenType::FUNCTION))return parseFunction();
+    else if(check(TokenType::FUNCTION)||check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseFunction();
     else throw std::runtime_error("Syntax Error: Expected PROGRAM, SUBROUTINE, or FUNCTION at top level");
 }
 
@@ -150,9 +150,13 @@ std::unique_ptr<ASTNode> Parser::parseDeclaration() {
             consume(TokenType::LPAREN,"Expected '(' for array dimensions");
             std::vector<ArrayDimension> dims;
             do{
-                Token upperToken=consume(TokenType::INT_LITERAL,"Expected integer dimension size");
-                int upper=std::stoi(upperToken.lexeme);
-                dims.push_back(ArrayDimension(upper));
+                Token upperToken(TokenType::UNKNOWN,"");
+                if(check(TokenType::INT_LITERAL)||check(TokenType::IDENTIFIER)){
+                    upperToken=advance();
+                }else{
+                    throw std::runtime_error("Expected integer or identifier for dimension size");
+                }
+                dims.push_back(ArrayDimension(upperToken.lexeme));
             }while(match(TokenType::COMMA));
             consume(TokenType::RPAREN,"Expected ')' after array dimensions");
             return std::make_unique<ArrayDeclNode>(varToken.lexeme,typeName,std::move(dims));
@@ -233,6 +237,7 @@ std::unique_ptr<ASTNode> Parser::parsePrimary() {
     if(match(TokenType::INT_LITERAL))return std::make_unique<NumberLiteralNode>(previous().lexeme, false);
     if(match(TokenType::REAL_LITERAL))return std::make_unique<NumberLiteralNode>(previous().lexeme, true);
     if(match(TokenType::STRING_LITERAL))return std::make_unique<StringLiteralNode>(previous().lexeme);
+    if(match(TokenType::DOT_TRUE)||match(TokenType::DOT_FALSE))return std::make_unique<StringLiteralNode>(previous().lexeme);
     if(match(TokenType::IDENTIFIER)){
         std::string name = previous().lexeme;
         if(match(TokenType::LPAREN)){
@@ -270,10 +275,10 @@ std::unique_ptr<ASTNode> Parser::parseLogicalOr(){
 }
 
 std::unique_ptr<ASTNode> Parser::parseLogicalAnd(){
-    auto expr=parseRelational();
+    auto expr=parseLogicalNot();
     while(match(TokenType::DOT_AND)){
         std::string op=previous().lexeme;
-        auto right=parseRelational();
+        auto right=parseLogicalNot();
         expr=std::make_unique<BinaryOpNode>(std::move(expr),op,std::move(right));
     }
     return expr;
@@ -367,9 +372,21 @@ std::unique_ptr<ASTNode> Parser::parseRead() {
 
 std::unique_ptr<ASTNode> Parser::parseAssign() {
     Token targetToken=consume(TokenType::IDENTIFIER,"Expected variable identifier in assignment");
+    std::vector<std::unique_ptr<ASTNode>> indices;
+    if(match(TokenType::LPAREN)){
+        if(!check(TokenType::RPAREN)){
+            do{
+                indices.push_back(parseExpression());
+            }while(match(TokenType::COMMA));
+        }
+        consume(TokenType::RPAREN,"Expected ')' after array indices in assignment");
+    }
     consume(TokenType::ASSIGN,"Expected '=' in assignment");
     auto expr=parseExpression();
-    return std::make_unique<AssignNode>(targetToken.lexeme,std::move(expr));
+    if(indices.empty()){
+        return std::make_unique<AssignNode>(targetToken.lexeme,std::move(expr));
+    }
+    return std::make_unique<AssignNode>(targetToken.lexeme,std::move(indices),std::move(expr));
 }
 
 std::unique_ptr<ASTNode> Parser::parseCall() {
@@ -393,6 +410,11 @@ std::unique_ptr<ASTNode> Parser::parseReturn() {
 }
 
 std::unique_ptr<ASTNode> Parser::parseStatement() {
+    if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
+        int label=std::stoi(peek().lexeme);
+        advance();
+        if(match(TokenType::CONTINUE))return std::make_unique<ContinueNode>(label);
+    }
     if (check(TokenType::IMPLICIT))return parseImplicitNone();
     if (check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
     if (check(TokenType::COMMON))return parseCommonBlock();

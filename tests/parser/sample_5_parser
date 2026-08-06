@@ -1,0 +1,28 @@
+[ProgramNode] TEST5
+  [ImplicitNoneNode]
+  [TypeDeclNode] REAL: X, Y, Z
+  [AssignNode] X =
+    Value:
+      [NumberLiteralNode] 2.5E1
+  [AssignNode] Y =
+    Value:
+      [NumberLiteralNode] 3.0D-1
+  [AssignNode] Z =
+    Value:
+      [BinaryOpNode] -
+        [BinaryOpNode] +
+          [BinaryOpNode] **
+            [IdentifierNode] X
+            [NumberLiteralNode] 2
+          [BinaryOpNode] /
+            [BinaryOpNode] *
+              [IdentifierNode] Y
+              [NumberLiteralNode] 5.0
+            [NumberLiteralNode] 2.0
+        [NumberLiteralNode] 1.0
+  [PrintNode] Format: *
+    [IdentifierNode] Z
+  [GotoNode] Target: 99
+  [PrintNode] Format: *
+    [StringLiteralNode] 'This is skipped'
+  [ContinueNode] Label: 99

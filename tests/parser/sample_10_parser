@@ -1,0 +1,48 @@
+[ProgramNode] TEST10
+  [ImplicitNoneNode]
+  [TypeDeclNode] INTEGER: N, I, SUM
+  [ArrayDeclNode] 10)
+  [TypeDeclNode] LOGICAL: DONE
+  [CommonBlockNode] /STATE/: DONE
+  [ReadNode] Format: * Vars: N
+  [AssignNode] SUM =
+    Value:
+      [NumberLiteralNode] 0
+  [AssignNode] DONE =
+    Value:
+      [StringLiteralNode] .FALSE.
+  [DoNode] Label:50, LoopVar:I
+    Start:
+      [NumberLiteralNode] 1
+    End:
+      [IdentifierNode] N
+    Body:
+      [AssignNode] X(<index>) =
+        Indices:
+          [IdentifierNode] I
+        Value:
+          [BinaryOpNode] *
+            [NumberLiteralNode] 1.0E0
+            [IdentifierNode] I
+      [AssignNode] SUM =
+        Value:
+          [BinaryOpNode] +
+            [IdentifierNode] SUM
+            [IdentifierNode] I
+      [IfNode]
+        Condition:
+          [BinaryOpNode] .GE.
+            [IdentifierNode] SUM
+            [NumberLiteralNode] 100
+        Then:
+          [AssignNode] DONE =
+            Value:
+              [StringLiteralNode] .TRUE.
+          [GotoNode] Target: 999
+      [ContinueNode] Label: 50
+  [ContinueNode] Label: 999
+  [PrintNode] Format: *
+    [StringLiteralNode] 'SUM:'
+    [IdentifierNode] SUM
+    [StringLiteralNode] 'DONE:'
+    [IdentifierNode] DONE

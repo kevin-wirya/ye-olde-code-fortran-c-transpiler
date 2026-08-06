@@ -8,10 +8,10 @@
 
 
 struct ArrayDimension{
-    int lower_bound;
-    int upper_bound;
-    ArrayDimension(int upper): lower_bound(1), upper_bound(upper){}
-    ArrayDimension(int lower, int upper): lower_bound(lower), upper_bound(upper){}
+    std::string lower_bound;
+    std::string upper_bound;
+    ArrayDimension(const std::string& upper):lower_bound("1"),upper_bound(upper){}
+    ArrayDimension(const std::string& lower,const std::string& upper):lower_bound(lower),upper_bound(upper){}
 };
 
 class ArrayDeclNode:public ASTNode{

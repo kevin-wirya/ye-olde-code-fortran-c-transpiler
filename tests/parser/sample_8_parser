@@ -1,0 +1,12 @@
+[ProgramNode] TEST8
+  [ImplicitNoneNode]
+  [TypeDeclNode] INTEGER: RES, MYFUNC, N
+  [AssignNode] N =
+    Value:
+      [NumberLiteralNode] 4
+  [AssignNode] RES =
+    Value:
+      [ArrayAccessNode] MYFUNC
+        [IdentifierNode] N
+  [PrintNode] Format: *
+    [IdentifierNode] RES

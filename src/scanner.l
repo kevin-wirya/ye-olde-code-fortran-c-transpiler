@@ -71,8 +71,9 @@ int current_col = 1;
 
    /* literals and identifiers */
 '[^'\n]*'                           {current_col+=yyleng;return static_cast<int>(TokenType::STRING_LITERAL);}
-[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?    {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
-\.[0-9]+([eE][+-]?[0-9]+)?          {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
+[0-9]+\.[0-9]*([eEdD][+-]?[0-9]+)?  {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
+\.[0-9]+([eEdD][+-]?[0-9]+)?        {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
+[0-9]+[eEdD][+-]?[0-9]+             {current_col+=yyleng;return static_cast<int>(TokenType::REAL_LITERAL);}
 [0-9]+                              {current_col+=yyleng;return static_cast<int>(TokenType::INT_LITERAL);}
 [a-zA-Z][a-zA-Z0-9_]*               {current_col+=yyleng;return static_cast<int>(TokenType::IDENTIFIER);}
 

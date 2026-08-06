@@ -1,0 +1,11 @@
+[ProgramNode] TEST9
+  [ImplicitNoneNode]
+  [TypeDeclNode] INTEGER: G1, G2
+  [CommonBlockNode] /GLOBALS/: G1, G2
+  [AssignNode] G1 =
+    Value:
+      [NumberLiteralNode] 10
+  [AssignNode] G2 =
+    Value:
+      [NumberLiteralNode] 20
+  [CallNode] Subroutine: PRTGLB

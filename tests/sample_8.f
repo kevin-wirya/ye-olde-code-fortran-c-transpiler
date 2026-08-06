@@ -1,0 +1,15 @@
+C     FUNCTION
+      PROGRAM TEST8
+      IMPLICIT NONE
+      INTEGER RES, MYFUNC, N
+      N = 4
+      RES = MYFUNC(N)
+      PRINT *, RES
+      END
+      
+      FUNCTION MYFUNC(VAL)
+      IMPLICIT NONE
+      INTEGER MYFUNC, VAL
+      MYFUNC = VAL * 3
+      RETURN
+      END

@@ -1,0 +1,13 @@
+[ProgramNode] TEST6
+  [ImplicitNoneNode]
+  [ArrayDeclNode] 5)
+  [TypeDeclNode] INTEGER: N
+  [AssignNode] N =
+    Value:
+      [NumberLiteralNode] 5
+  [CallNode] Subroutine: FILL
+    [IdentifierNode] ARR
+    [IdentifierNode] N
+  [PrintNode] Format: *
+    [ArrayAccessNode] ARR
+      [NumberLiteralNode] 1
