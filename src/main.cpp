@@ -7,6 +7,7 @@
 #include "Parser.h"
 #include "PrintVisitor.h"
 #include "SemanticAnalyzer.h"
+#include "codegen/CodeGenVisitor.h"
 
 namespace fs = std::filesystem;
 
@@ -128,6 +129,24 @@ int main(int argc, char* argv[]) {
                     PrintVisitor decoratedFileVisitor(semantic_out_file,true);
                     ast->accept(decoratedFileVisitor);
                     semantic_out_file<<"===============================================\n";
+                }
+
+                // setup code generation
+                fs::create_directories("tests/codegen");
+                std::string codegen_output_path="tests/codegen/"+stem+".c";
+                std::ofstream codegen_out_file(codegen_output_path);
+                std::cout<<"\n------> Starting Code Generation...\n";
+
+                std::cout<<"\n====== C TARGET CODE GENERATION ======\n";
+                CodeGenVisitor consoleCodeGen(std::cout);
+                ast->accept(consoleCodeGen);
+                std::cout<<"======================================\n";
+
+                if(codegen_out_file.is_open()){
+                    CodeGenVisitor fileCodeGen(codegen_out_file);
+                    ast->accept(fileCodeGen);
+                    codegen_out_file.close();
+                    std::cout<<"------> Code Generation result successfully saved in "<<codegen_output_path<<"\n";
                 }
             }else{
                 std::cout<<"\n====== SEMANTIC ERRORS ======\n";

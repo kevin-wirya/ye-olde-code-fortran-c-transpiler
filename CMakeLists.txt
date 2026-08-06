@@ -2,12 +2,21 @@ cmake_minimum_required(VERSION 3.10)
 project(F77Transpiler VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
+set(SOURCES
+    src/Lexer.cpp
+    src/Parser.cpp
+    src/SymbolTable.cpp
+    src/SemanticAnalyzer.cpp
+    src/CodeGenVisitor.cpp
+    src/main.cpp
+)
 include_directories(
     include
     include/lexer
     include/parser
     include/parser/ast
     include/semantic
+    include/codegen
 )
 if(NOT FLEX_EXECUTABLE AND EXISTS "C:/msys64/usr/bin/flex.exe")
     set(FLEX_EXECUTABLE "C:/msys64/usr/bin/flex.exe")
