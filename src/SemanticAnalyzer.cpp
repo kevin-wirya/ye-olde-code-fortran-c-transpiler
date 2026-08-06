@@ -119,6 +119,14 @@ void SemanticAnalyzer::visit(CommonBlockNode& node){
         sym.common_block_name=node.block_name;
         symbol_table.declare(sym);
     }
+    auto it=global_common_blocks.find(node.block_name);
+    if(it==global_common_blocks.end()){
+        global_common_blocks[node.block_name]={node.block_name,node.variable_names};
+    }else{
+        if(it->second.variable_names.size()!=node.variable_names.size()){
+            reportError("Semantic Error: COMMON block '/" + node.block_name + "/' variable count mismatch across subprogram units");
+        }
+    }
 }
 
 void SemanticAnalyzer::visit(AssignNode& node){

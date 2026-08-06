@@ -5,12 +5,19 @@
 #include "SymbolTable.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
+
+struct CommonBlockInfo{
+    std::string name;
+    std::vector<std::string> variable_names;
+};
 
 class SemanticAnalyzer : public ASTVisitor {
 private:
   SymbolTable symbol_table;
   std::vector<std::string> errors;
   bool has_implicit_none;
+  std::unordered_map<std::string,CommonBlockInfo> global_common_blocks;
   void reportError(const std::string &msg);
   std::string getInferredType(ASTNode *node);
 
