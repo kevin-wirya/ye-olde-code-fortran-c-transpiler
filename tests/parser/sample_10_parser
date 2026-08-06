@@ -1,7 +1,7 @@
 [ProgramNode] TEST10
   [ImplicitNoneNode]
   [TypeDeclNode] INTEGER: N, I, SUM
-  [ArrayDeclNode] 10)
+  [ArrayDeclNode] REAL X(10)
   [TypeDeclNode] LOGICAL: DONE
   [CommonBlockNode] /STATE/: DONE
   [ReadNode] Format: * Vars: N
