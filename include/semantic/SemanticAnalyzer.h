@@ -6,13 +6,13 @@
 #include <string>
 #include <vector>
 
-
 class SemanticAnalyzer : public ASTVisitor {
 private:
   SymbolTable symbol_table;
   std::vector<std::string> errors;
   bool has_implicit_none;
   void reportError(const std::string &msg);
+  std::string getInferredType(ASTNode *node);
 
 public:
   SemanticAnalyzer();

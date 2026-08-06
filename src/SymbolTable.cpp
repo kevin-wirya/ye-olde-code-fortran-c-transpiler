@@ -24,6 +24,15 @@ bool SymbolTable::declare(const Symbol& sym){
     return true;
 }
 
+bool SymbolTable::updateType(const std::string& name,const std::string& type){
+    auto it=current_scope->symbols.find(name);
+    if(it!=current_scope->symbols.end()){
+        it->second.type=type;
+        return true;
+    }
+    return false;
+}
+
 const Symbol* SymbolTable::lookup(const std::string& name)const{
     auto curr=current_scope;
     while(curr!=nullptr){

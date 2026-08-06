@@ -4,6 +4,7 @@
 #include "ASTNode.h"
 class ExpressionNode : public ASTNode {
     public:
+        std::string inferred_type;
         virtual ~ExpressionNode() = default;
 };
 

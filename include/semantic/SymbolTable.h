@@ -23,6 +23,7 @@ class SymbolTable{
         void enterScope();
         void exitScope();
         bool declare(const Symbol& sym);
+        bool updateType(const std::string& name,const std::string& type);
         const Symbol* lookup(const std::string& name)const;
         const Symbol* lookupLocal(const std::string& name)const;
         bool isGlobalScope()const;
