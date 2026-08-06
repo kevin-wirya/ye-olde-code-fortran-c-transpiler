@@ -280,7 +280,7 @@ std::unique_ptr<ASTNode> Parser::parseLogicalAnd(){
 }
 
 std::unique_ptr<ASTNode> Parser::parseLogicalNot(){
-    if(match(TokenType::NOT_DOT)){
+    if(match(TokenType::DOT_NOT)){
         auto right=parseLogicalNot();
         return std::make_unique<UnaryOpNode>(previous().lexeme,std::move(right));
     }

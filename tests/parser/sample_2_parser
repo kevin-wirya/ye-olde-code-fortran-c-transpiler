@@ -1,0 +1,3 @@
+[ProgramNode] hello
+  [PrintNode] Format: *
+    [StringLiteralNode] 'Hello, World!'
