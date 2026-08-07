@@ -297,10 +297,23 @@ std::unique_ptr<ASTNode> Parser::parseDo(){
 }
 
 std::unique_ptr<ASTNode> Parser::parseGoto() {
-    consume(TokenType::GOTO, "Expected GOTO keyword");
-    Token label_token=consume(TokenType::INT_LITERAL, "Expected label number after GOTO");
-    int label=std::stoi(label_token.lexeme);
-    return std::make_unique<GotoNode>(label);
+    consume(TokenType::GOTO,"Expected GOTO keyword");
+    if(check(TokenType::LPAREN)){
+        consume(TokenType::LPAREN,"Expected '(' in computed GOTO");
+        std::vector<int> labels;
+        do{
+            Token label_token=consume(TokenType::INT_LITERAL,"Expected label number in computed GOTO list");
+            labels.push_back(std::stoi(label_token.lexeme));
+        }while(match(TokenType::COMMA));
+        consume(TokenType::RPAREN, "Expected ')' after computed GOTO labels");
+        match(TokenType::COMMA);
+        auto selector=parseExpression();
+        return std::make_unique<ComputedGotoNode>(std::move(labels),std::move(selector));
+    }else{
+        Token label_token=consume(TokenType::INT_LITERAL,"Expected label number after GOTO");
+        int label=std::stoi(label_token.lexeme);
+        return std::make_unique<GotoNode>(label);
+    }
 }
 
 std::unique_ptr<ASTNode> Parser::parseContinue() {

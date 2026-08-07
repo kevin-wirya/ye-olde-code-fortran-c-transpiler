@@ -1,0 +1,15 @@
+      PROGRAM COMPGOTO
+      IMPLICIT NONE
+      INTEGER I
+      I = 2
+      GOTO (10, 20, 30), I
+ 10   CONTINUE
+      PRINT *, 100
+      GOTO 40
+ 20   CONTINUE
+      PRINT *, 200
+      GOTO 40
+ 30   CONTINUE
+      PRINT *, 300
+ 40   CONTINUE
+      END

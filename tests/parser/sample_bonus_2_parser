@@ -1,0 +1,20 @@
+[ProgramNode] COMPGOTO
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: I
+├── [AssignNode] I =
+│   └── Value:
+│       └── [NumberLiteralNode] 2
+├── [ComputedGotoNode] Labels: 10, 20, 30
+│       └── [IdentifierNode] I
+├── [ContinueNode] Label: 10
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 100
+├── [GotoNode] Target: 40
+├── [ContinueNode] Label: 20
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 200
+├── [GotoNode] Target: 40
+├── [ContinueNode] Label: 30
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 300
+└── [ContinueNode] Label: 40

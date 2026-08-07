@@ -1,0 +1,47 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     COMPGOTO     program      VOID      0     1     0     0     0    
+5     I            variable     INTEGER   0     1     0     0     0    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     COMPGOTO     5     0     0     4    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] COMPGOTO
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: I
+├── [AssignNode] I =
+│   └── Value:
+│       └── [NumberLiteralNode] 2 (type: INTEGER)
+├── [ComputedGotoNode] Labels: 10, 20, 30
+│       └── [IdentifierNode] I (type: INTEGER)
+├── [ContinueNode] Label: 10
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 100 (type: INTEGER)
+├── [GotoNode] Target: 40
+├── [ContinueNode] Label: 20
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 200 (type: INTEGER)
+├── [GotoNode] Target: 40
+├── [ContinueNode] Label: 30
+├── [PrintNode] Format: *
+│   └── [NumberLiteralNode] 300 (type: INTEGER)
+└── [ContinueNode] Label: 40
+===============================================

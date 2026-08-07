@@ -10,6 +10,7 @@
 #include "IfNode.h"
 #include "DoNode.h"
 #include "GotoNode.h"
+#include "ast/ComputedGotoNode.h"
 #include "ContinueNode.h"
 #include "NumberLiteralNode.h"
 #include "StringLiteralNode.h"
@@ -282,6 +283,10 @@ void SemanticAnalyzer::visit(DoNode& node){
 
 void SemanticAnalyzer::visit(GotoNode& node){
     (void)node;
+}
+
+void SemanticAnalyzer::visit(ComputedGotoNode& node){
+    if(node.selector_expr)node.selector_expr->accept(*this);
 }
 
 void SemanticAnalyzer::visit(ContinueNode& node){

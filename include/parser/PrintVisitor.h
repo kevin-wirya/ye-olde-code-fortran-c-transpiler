@@ -216,6 +216,21 @@ public:
         os<<current_prefix<<"[GotoNode] Target: "<<node.target_label<<"\n";
     }
 
+    void visit(ComputedGotoNode& node)override{
+        os<<current_prefix<<"[ComputedGotoNode] Labels: ";
+        for(size_t i=0;i<node.labels.size();++i){
+            os<<node.labels[i]<<(i+1<node.labels.size()?", ":"");
+        }
+        os<<"\n";
+        std::string base=getChildBasePrefix();
+        if(node.selector_expr){
+            current_prefix=base+"└── Selector:\n";
+            std::string sel_base=base+"    ";
+            current_prefix=sel_base+"└── ";
+            node.selector_expr->accept(*this);
+        }
+    }
+
     void visit(ReturnNode& node) override {
         os<<current_prefix<<"[ReturnNode]\n";
     }

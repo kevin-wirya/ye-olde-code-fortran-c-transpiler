@@ -228,6 +228,17 @@ void CodeGenVisitor::visit(GotoNode& node){
     os<<"    goto label_"<<node.target_label<<";\n";
 }
 
+void CodeGenVisitor::visit(ComputedGotoNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
+    os<<"    switch(";
+    if(node.selector_expr)node.selector_expr->accept(*this);
+    os<<"){\n";
+    for(size_t i=0;i<node.labels.size();++i){
+        os<<"        case "<<(i+1)<<": goto label_"<<node.labels[i]<<"; break;\n";
+    }
+    os<<"    }\n";
+}
+
 void CodeGenVisitor::visit(ReturnNode& node){
     if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    return;\n";

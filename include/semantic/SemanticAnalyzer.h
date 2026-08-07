@@ -81,6 +81,7 @@ public:
   void visit(IfNode &node) override;
   void visit(DoNode &node) override;
   void visit(GotoNode &node) override;
+  void visit(ComputedGotoNode &node) override;
   void visit(ContinueNode &node) override;
   void visit(NumberLiteralNode &node) override;
   void visit(StringLiteralNode &node) override;

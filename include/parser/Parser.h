@@ -17,6 +17,7 @@
 #include "ReadNode.h"
 #include "CallNode.h"
 #include "GotoNode.h"
+#include "ComputedGotoNode.h"
 #include "ContinueNode.h"
 #include "ReturnNode.h"
 #include "BinaryOpNode.h"

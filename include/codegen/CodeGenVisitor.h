@@ -16,6 +16,7 @@
 #include "ReadNode.h"
 #include "CallNode.h"
 #include "GotoNode.h"
+#include "ast/ComputedGotoNode.h"
 #include "ContinueNode.h"
 #include "ReturnNode.h"
 #include "BinaryOpNode.h"
@@ -92,6 +93,7 @@ class CodeGenVisitor: public ASTVisitor{
         void visit(ReadNode& node) override;
         void visit(CallNode& node) override;
         void visit(GotoNode& node) override;
+        void visit(ComputedGotoNode& node) override;
         void visit(ContinueNode& node) override;
         void visit(ReturnNode& node) override;
         void visit(BinaryOpNode& node) override;

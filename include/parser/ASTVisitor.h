@@ -23,6 +23,7 @@ class NumberLiteralNode;
 class StringLiteralNode;
 class ArrayAccessNode;
 class ImplicitNoneNode;
+class ComputedGotoNode;
 
 class ASTVisitor{
 public:
@@ -36,6 +37,7 @@ public:
   virtual void visit(IfNode &node)=0;
   virtual void visit(DoNode &node)=0;
   virtual void visit(GotoNode &node)=0;
+  virtual void visit(ComputedGotoNode &node)=0;
   virtual void visit(CallNode &node)=0;
   virtual void visit(AssignNode &node)=0;
   virtual void visit(PrintNode &node)=0;
