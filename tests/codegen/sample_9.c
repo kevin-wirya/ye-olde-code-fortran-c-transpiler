@@ -16,7 +16,7 @@ int main(void){
     PRTGLB();
 void PRTGLB(){
     int G1, G2;
-    printf("%d\n", G1, "%d\n", G2);
+    printf("%d %d\n", G1, G2);
     return;
 }
 

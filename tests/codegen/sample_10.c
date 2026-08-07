@@ -14,17 +14,17 @@ int main(void){
     bool DONE;
     scanf("%d", &N);
     SUM = 0;
-    DONE = .FALSE.;
-    for(I=1; I<=N; ++I){
+    DONE = false;
+    for(I=1; I<=N; I+=1){
     X[(I - 1)] = (1.0E0 * I);
     SUM = (SUM + I);
     if((SUM >= 100)){
-    DONE = .TRUE.;
+    DONE = true;
     goto label_999;
     }
 label_50:;
     }
 label_999:;
-    printf("%d\n", 'SUM:', "%d\n", SUM, "%d\n", 'DONE:', "%d\n", DONE);
+    printf("%s %d %s %d\n", "SUM:", SUM, "DONE:", DONE);
     return 0;
 }

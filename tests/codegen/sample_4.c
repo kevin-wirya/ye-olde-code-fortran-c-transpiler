@@ -9,13 +9,13 @@ int main(void){
     int A, B;
     A = 5;
     B = 10;
-    FLAG = .TRUE.;
+    FLAG = true;
     if(((A < B) && FLAG)){
-    RESULT = .FALSE..FALSE.;
-    printf("%d\n", 'A is less than B');
+    RESULT = .FALSE.false;
+    printf("%s\n", "A is less than B");
     } else {
-    RESULT = .FALSE.;
-    printf("%d\n", 'A is >= B');
+    RESULT = false;
+    printf("%s\n", "A is >= B");
     }
     return 0;
 }

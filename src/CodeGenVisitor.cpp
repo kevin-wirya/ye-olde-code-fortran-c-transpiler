@@ -96,7 +96,10 @@ void CodeGenVisitor::visit(DoNode& node){
     if(node.start_expr)node.start_expr->accept(*this);
     os<<"; "<<node.loop_variable<<"<=";
     if(node.end_expr)node.end_expr->accept(*this);
-    os<<"; ++"<<node.loop_variable<<"){\n";
+    os<<"; "<<node.loop_variable<<"+=";
+    if(node.step_expr)node.step_expr->accept(*this);
+    else os<<"1";
+    os<<"){\n";
     for(auto& stmt:node.body){
         if(stmt)stmt->accept(*this);
     }
@@ -116,19 +119,32 @@ void CodeGenVisitor::visit(AssignNode& node){
 }
 
 void CodeGenVisitor::visit(PrintNode& node){
-    os<<"    printf(";
+    os<<"    printf(\"";
     for(size_t i=0;i<node.expressions.size();++i){
-        if(i>0)os<<", ";
-        os<<"\"%d\\n\", ";
+        if(dynamic_cast<StringLiteralNode*>(node.expressions[i].get())){
+            os<<"%s";
+        }else{
+            os<<"%d";
+        }
+        if(i+1<node.expressions.size())os<<" ";
+    }
+    os<<"\\n\"";
+    for(size_t i=0;i<node.expressions.size();++i){
+        os<<", ";
         node.expressions[i]->accept(*this);
     }
     os<<");\n";
 }
 
 void CodeGenVisitor::visit(ReadNode& node){
-    os<<"    scanf(";
+    os<<"    scanf(\"";
     for(size_t i=0;i<node.variables.size();++i){
-        os<<"\"%d\", &"<<node.variables[i];
+        os<<"%d";
+        if(i+1<node.variables.size())os<<" ";
+    }
+    os<<"\"";
+    for(size_t i=0;i<node.variables.size();++i){
+        os<<", &"<<node.variables[i];
     }
     os<<");\n";
 }
@@ -188,13 +204,65 @@ void CodeGenVisitor::visit(NumberLiteralNode& node){
 }
 
 void CodeGenVisitor::visit(StringLiteralNode& node){
-    os<<node.value;
+    std::string val=node.value;
+    if(val==".TRUE.")os<<"true";
+    else if(val==".FALSE.")os<<"false";
+    else if(val.size()>=2&&val.front()=='\''&&val.back()=='\''){
+        os<<"\""<<val.substr(1,val.size()-2)<<"\"";
+    }else{
+        os<<val;
+    }
 }
 
 void CodeGenVisitor::visit(ArrayAccessNode& node){
-    os<<node.array_name<<"[";
-    printFlattenedIndex(node.array_name, node.indices);
-    os<<"]";
+    std::string upper_name=node.array_name;
+    for(auto& c:upper_name)c=toupper(c);
+
+    if(upper_name=="ABS"||upper_name=="IABS"){
+        os<<"abs(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="FABS"||upper_name=="ABS"){
+        os<<"fabs(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="SQRT"){
+        os<<"sqrt(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="SIN"){
+        os<<"sin(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="COS"){
+        os<<"cos(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="TAN"){
+        os<<"tan(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="EXP"){
+        os<<"exp(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="LOG"||upper_name=="ALOG"){
+        os<<"log(";
+        if(!node.indices.empty())node.indices[0]->accept(*this);
+        os<<")";
+    }else if(upper_name=="MOD"){
+        if(node.indices.size()>=2){
+            os<<"(";
+            node.indices[0]->accept(*this);
+            os<<" % ";
+            node.indices[1]->accept(*this);
+            os<<")";
+        }
+    }else{
+        os<<node.array_name<<"[";
+        printFlattenedIndex(node.array_name, node.indices);
+        os<<"]";
+    }
 }
 
 void CodeGenVisitor::printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices){

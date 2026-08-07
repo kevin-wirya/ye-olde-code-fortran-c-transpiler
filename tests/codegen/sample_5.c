@@ -11,7 +11,7 @@ int main(void){
     Z = (((X ** 2) + ((Y * 5.0) / 2.0)) - 1.0);
     printf("%d\n", Z);
     goto label_99;
-    printf("%d\n", 'This is skipped');
+    printf("%s\n", "This is skipped");
 label_99:;
     return 0;
 }
