@@ -31,6 +31,7 @@ int current_col = 1;
 "INTEGER"                           {current_col+=yyleng;return static_cast<int>(TokenType::INTEGER);}
 "REAL"                              {current_col+=yyleng;return static_cast<int>(TokenType::REAL);}
 "LOGICAL"                           {current_col+=yyleng;return static_cast<int>(TokenType::LOGICAL);}
+"CHARACTER"                         {current_col+=yyleng;return static_cast<int>(TokenType::CHARACTER);}
 "COMMON"                            {current_col+=yyleng;return static_cast<int>(TokenType::COMMON);}
 "DO"                                {current_col+=yyleng;return static_cast<int>(TokenType::DO);}
 "CONTINUE"                          {current_col+=yyleng;return static_cast<int>(TokenType::CONTINUE);}

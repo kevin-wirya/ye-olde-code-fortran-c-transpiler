@@ -113,7 +113,7 @@ std::unique_ptr<ASTNode> Parser::parseProgram(){
             try{
                 if(check(TokenType::SUBROUTINE)){
                     body.push_back(parseSubroutine());
-                }else if(check(TokenType::FUNCTION)||(check(TokenType::INTEGER)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::REAL)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::LOGICAL)&&peekNextType()==TokenType::FUNCTION)){
+                }else if(check(TokenType::FUNCTION)||(check(TokenType::INTEGER)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::REAL)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::LOGICAL)&&peekNextType()==TokenType::FUNCTION)||(check(TokenType::CHARACTER)&&peekNextType()==TokenType::FUNCTION)){
                     body.push_back(parseFunction());
                 }else break;
             }catch(const ParseError&){
@@ -154,6 +154,13 @@ std::unique_ptr<ASTNode> Parser::parseFunction() {
     if(match(TokenType::INTEGER))ret_type="INTEGER";
     else if(match(TokenType::REAL))ret_type="REAL";
     else if(match(TokenType::LOGICAL))ret_type="LOGICAL";
+    else if(match(TokenType::CHARACTER)){
+        ret_type="CHARACTER";
+        if(match(TokenType::STAR)){
+            Token lenToken=consume(TokenType::INT_LITERAL,"Expected integer length after CHARACTER*");
+            ret_type+="*"+lenToken.lexeme;
+        }
+    }
     consume(TokenType::FUNCTION,"Expected FUNCTION keyword");
     Token name_token=consume(TokenType::IDENTIFIER,"Expected function name identifier");
     std::vector<std::string> params;
@@ -207,6 +214,13 @@ std::unique_ptr<ASTNode> Parser::parseDeclaration() {
     if(match(TokenType::INTEGER))typeName="INTEGER";
     else if(match(TokenType::REAL))typeName="REAL";
     else if(match(TokenType::LOGICAL))typeName="LOGICAL";
+    else if(match(TokenType::CHARACTER)){
+        typeName="CHARACTER";
+        if(match(TokenType::STAR)){
+            Token lenToken=consume(TokenType::INT_LITERAL,"Expected integer length after CHARACTER*");
+            typeName+="*"+lenToken.lexeme;
+        }
+    }
     else throw std::runtime_error("Expected type specification in declaration");
     std::vector<std::string> scalar_vars;
     do{
@@ -481,7 +495,7 @@ std::unique_ptr<ASTNode> Parser::parseStatement() {
         if(match(TokenType::CONTINUE))return std::make_unique<ContinueNode>(label);
     }
     if (check(TokenType::IMPLICIT))return parseImplicitNone();
-    if (check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL))return parseDeclaration();
+    if (check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL)||check(TokenType::CHARACTER))return parseDeclaration();
     if (check(TokenType::COMMON))return parseCommonBlock();
     if (check(TokenType::IF))return parseIf();
     if (check(TokenType::DO))return parseDo();

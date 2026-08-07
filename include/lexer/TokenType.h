@@ -15,6 +15,7 @@ enum class TokenType {
     INTEGER,
     REAL,
     LOGICAL,
+    CHARACTER,
     COMMON,
     DO,
     CONTINUE,
@@ -85,6 +86,7 @@ inline std::string tokenTypeToString(TokenType type) {
         case TokenType::INTEGER: return "INTEGER";
         case TokenType::REAL: return "REAL";
         case TokenType::LOGICAL: return "LOGICAL";
+        case TokenType::CHARACTER: return "CHARACTER";
         case TokenType::COMMON: return "COMMON";
         case TokenType::DO: return "DO";
         case TokenType::CONTINUE: return "CONTINUE";

@@ -1,0 +1,13 @@
+[ProgramNode] CHRTEST
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] CHARACTER*10: A
+├── [TypeDeclNode] CHARACTER*5: B
+├── [AssignNode] A =
+│   └── Value:
+│       └── [StringLiteralNode] 'HELLO'
+├── [AssignNode] B =
+│   └── Value:
+│       └── [StringLiteralNode] 'WORLD'
+└── [PrintNode] Format: *
+    ├── [IdentifierNode] A
+    └── [IdentifierNode] B

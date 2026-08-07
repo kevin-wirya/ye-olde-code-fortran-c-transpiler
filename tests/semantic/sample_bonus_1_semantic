@@ -1,0 +1,41 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     CHRTEST      program      VOID      0     1     0     0     0    
+5     A            variable     CHARACTER*10 0     1     0     0     0    
+6     B            variable     CHARACTER*5 0     1     0     4     5    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     CHRTEST      6     0     0     8    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] CHRTEST
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] CHARACTER*10: A
+├── [TypeDeclNode] CHARACTER*5: B
+├── [AssignNode] A =
+│   └── Value:
+│       └── [StringLiteralNode] 'HELLO' (type: STRING)
+├── [AssignNode] B =
+│   └── Value:
+│       └── [StringLiteralNode] 'WORLD' (type: STRING)
+└── [PrintNode] Format: *
+    ├── [IdentifierNode] A (type: CHARACTER*10)
+    └── [IdentifierNode] B (type: CHARACTER*5)
+===============================================

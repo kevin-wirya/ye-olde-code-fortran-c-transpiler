@@ -42,6 +42,7 @@ class CodeGenVisitor: public ASTVisitor{
                 if(entry.id==name&&(entry.obj=="variable"||entry.obj=="array")){
                     if(entry.type=="REAL")return "float";
                     if(entry.type=="LOGICAL")return "bool";
+                    if(entry.type.find("CHARACTER")==0)return "char";
                     return "int";
                 }
             }
@@ -54,9 +55,16 @@ class CodeGenVisitor: public ASTVisitor{
                                 : os(outStream), common_blocks(cb), tab(t) {
             os << "#include <stdio.h>\n";
             os << "#include <math.h>\n";
-            os << "#include <stdlib.h>\n";
-            os << "#include <stdbool.h>\n";
-            os << "#include <string.h>\n\n";
+            os<<"#include <stdlib.h>\n";
+            os<<"#include <stdbool.h>\n";
+            os<<"#include <string.h>\n\n";
+            os<<"#define F77_STR_ASSIGN(dest, src, len) \\\n";
+            os<<"    do { \\\n";
+            os<<"        strncpy(dest, src, len); \\\n";
+            os<<"        int _l = strlen(src); \\\n";
+            os<<"        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \\\n";
+            os<<"        dest[len] = '\\0'; \\\n";
+            os<<"    } while(0)\n\n";
             if(common_blocks){
                 for(const auto& pair: *common_blocks){
                     os<<"struct "<<pair.first<<"_t {\n";
@@ -68,6 +76,7 @@ class CodeGenVisitor: public ASTVisitor{
             }
         }
         std::unordered_map<std::string, std::vector<std::string>> array_dims;
+        std::unordered_map<std::string, int> string_lengths;
         void printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices);
         void visit(ProgramNode& node) override;
         void visit(SubroutineNode& node) override;
