@@ -16,7 +16,7 @@ int main(void){
     SUM = 0;
     DONE = .FALSE.;
     for(I=1; I<=N; ++I){
-    X[I - 1] = (1.0E0 * I);
+    X[(I - 1)] = (1.0E0 * I);
     SUM = (SUM + I);
     if((SUM >= 100)){
     DONE = .TRUE.;

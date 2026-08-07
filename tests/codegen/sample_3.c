@@ -9,7 +9,7 @@ int main(void){
     int I, J;
     for(I=1; I<=3; ++I){
     for(J=1; J<=3; ++J){
-    MATRIX[I - 1J - 1] = (I * J);
+    MATRIX[(((I) - 1) + ((J) - 1) * 3)] = (I * J);
 label_20:;
     }
 label_10:;

@@ -67,7 +67,8 @@ class CodeGenVisitor: public ASTVisitor{
                 }
             }
         }
-
+        std::unordered_map<std::string, std::vector<std::string>> array_dims;
+        void printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices);
         void visit(ProgramNode& node) override;
         void visit(SubroutineNode& node) override;
         void visit(FunctionNode& node) override;

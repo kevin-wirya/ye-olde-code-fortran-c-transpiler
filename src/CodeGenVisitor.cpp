@@ -56,13 +56,16 @@ void CodeGenVisitor::visit(ArrayDeclNode& node){
     if(node.type_name=="REAL")ctype="float";
     else if(node.type_name=="LOGICAL")ctype="bool";
     int total_size=1;
+    std::vector<std::string> dims;
     for(const auto& dim:node.dimensions){
         try{
             total_size*=std::stoi(dim.upper_bound);
         }catch(...){
             total_size*=10;
         }
+        dims.push_back(dim.upper_bound);
     }
+    array_dims[node.array_name] = dims;
     os<<"    "<<ctype<<" "<<node.array_name<<"["<<total_size<<"];\n";
 }
 
@@ -104,10 +107,7 @@ void CodeGenVisitor::visit(AssignNode& node){
     os<<"    "<<node.target_variable;
     if(!node.index_expressions.empty()){
         os<<"[";
-        for(size_t i=0;i<node.index_expressions.size();++i){
-            node.index_expressions[i]->accept(*this);
-            os<<" - 1";
-        }
+        printFlattenedIndex(node.target_variable, node.index_expressions);
         os<<"]";
     }
     os<<" = ";
@@ -193,9 +193,29 @@ void CodeGenVisitor::visit(StringLiteralNode& node){
 
 void CodeGenVisitor::visit(ArrayAccessNode& node){
     os<<node.array_name<<"[";
-    for(size_t i=0;i<node.indices.size();++i){
-        node.indices[i]->accept(*this);
-        os<<" - 1";
-    }
+    printFlattenedIndex(node.array_name, node.indices);
     os<<"]";
+}
+
+void CodeGenVisitor::printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices){
+    if(array_dims.find(array_name)!=array_dims.end()&&indices.size()>1){
+        const auto& dims=array_dims[array_name];
+        os<<"(";
+        for(size_t i=0;i<indices.size();++i){
+            if(i>0) os<<"+";
+            os<<"((";
+            indices[i]->accept(*this);
+            os<<")-1)";
+            for(size_t j=0;j<i;++j){
+                if(j<dims.size()){
+                    os<<"*"<<dims[j];
+                }
+            }
+        }
+        os<<")";
+    }else{
+        os<<"(";
+        if(!indices.empty())indices[0]->accept(*this);
+        os<<" - 1)";
+    }
 }

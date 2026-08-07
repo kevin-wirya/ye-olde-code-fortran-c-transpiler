@@ -7,7 +7,7 @@
 int main(void){
     float X, Y, CALC;
     X = 5.0;
-    Y = CALC[X - 1];
+    Y = CALC[(X - 1)];
     printf("%d\n", Y);
 float CALC(float* VAL){
     float VAL;
