@@ -12,7 +12,7 @@ void CodeGenVisitor::visit(ProgramNode& node){
 void CodeGenVisitor::visit(SubroutineNode& node){
     os<<"void "<<node.name<<"(";
     for(size_t i=0;i<node.parameters.size();++i){
-        os<<"int* "<<node.parameters[i]<<(i+1<node.parameters.size()?", ":"");
+        os<<getCType(node.parameters[i])<<"* "<<node.parameters[i]<<(i+1<node.parameters.size()?", ":"");
     }
     os<<"){\n";
     for(auto& stmt:node.body){
@@ -24,10 +24,10 @@ void CodeGenVisitor::visit(SubroutineNode& node){
 void CodeGenVisitor::visit(FunctionNode& node){
     std::string ret="int";
     if(node.returnType=="REAL")ret="float";
-    else if(node.returnType=="LOGICAL")ret="bool";
+    else if(node.returnType=="LOGICAL")ret="bool";    
     os<<ret<<" "<<node.name<<"(";
     for(size_t i=0;i<node.parameters.size();++i){
-        os<<"int* "<<node.parameters[i]<<(i+1<node.parameters.size()?", ":"");
+        os<<getCType(node.parameters[i])<<"* "<<node.parameters[i]<<(i+1<node.parameters.size()?", ":"");
     }
     os<<"){\n";
     for(auto& stmt:node.body){

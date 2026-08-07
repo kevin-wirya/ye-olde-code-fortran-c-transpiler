@@ -24,21 +24,48 @@
 #include "NumberLiteralNode.h"
 #include "StringLiteralNode.h"
 #include "ArrayAccessNode.h"
+#include "SemanticAnalyzer.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include<unordered_map>
 
 class CodeGenVisitor: public ASTVisitor{
     private:
         std::ostream& os;
+        const std::unordered_map<std::string, CommonBlockInfo>* common_blocks;
+        const std::vector<TabEntry>* tab;
+        std::string getCType(const std::string& name) const{
+            if(!tab) return "int";
+            for(const auto& entry: *tab){
+                if(entry.id==name&&(entry.obj=="variable"||entry.obj=="array")){
+                    if(entry.type=="REAL")return "float";
+                    if(entry.type=="LOGICAL")return "bool";
+                    return "int";
+                }
+            }
+            return "int";
+        }
     public:
-        explicit CodeGenVisitor(std::ostream& outStream = std::cout):os(outStream){
+        explicit CodeGenVisitor(std::ostream& outStream=std::cout, 
+                                const std::unordered_map<std::string, CommonBlockInfo>* cb=nullptr,
+                                const std::vector<TabEntry>* t=nullptr)
+                                : os(outStream), common_blocks(cb), tab(t) {
             os << "#include <stdio.h>\n";
             os << "#include <math.h>\n";
             os << "#include <stdlib.h>\n";
             os << "#include <stdbool.h>\n";
             os << "#include <string.h>\n\n";
+            if(common_blocks){
+                for(const auto& pair: *common_blocks){
+                    os<<"struct "<<pair.first<<"_t {\n";
+                    for(const auto& var: pair.second.variable_names){
+                        os<<"    "<<getCType(var)<<" "<<var<<";\n";
+                    }
+                    os<<"} "<<pair.first<<";\n\n";
+                }
+            }
         }
 
         void visit(ProgramNode& node) override;

@@ -138,12 +138,12 @@ int main(int argc, char* argv[]) {
                 std::cout<<"\n------> Starting Code Generation...\n";
 
                 std::cout<<"\n====== C TARGET CODE GENERATION ======\n";
-                CodeGenVisitor consoleCodeGen(std::cout);
+                CodeGenVisitor consoleCodeGen(std::cout, &analyzer.getCommonBlocks(), &analyzer.getTab());
                 ast->accept(consoleCodeGen);
                 std::cout<<"======================================\n";
 
                 if(codegen_out_file.is_open()){
-                    CodeGenVisitor fileCodeGen(codegen_out_file);
+                    CodeGenVisitor fileCodeGen(codegen_out_file, &analyzer.getCommonBlocks(), &analyzer.getTab());
                     ast->accept(fileCodeGen);
                     codegen_out_file.close();
                     std::cout<<"------> Code Generation result successfully saved in "<<codegen_output_path<<"\n";

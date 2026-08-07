@@ -67,6 +67,8 @@ public:
   SemanticAnalyzer();
   bool analyze(ASTNode &root);
   const std::vector<std::string> &getErrors() const { return errors; }
+  const std::unordered_map<std::string,CommonBlockInfo>& getCommonBlocks() const{return global_common_blocks;}
+  const std::vector<TabEntry>& getTab() const{return tab;}
   void printSymbolTables(std::ostream &os) const;
   void visit(ProgramNode &node) override;
   void visit(SubroutineNode &node) override;
