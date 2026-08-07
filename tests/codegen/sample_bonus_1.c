@@ -13,12 +13,17 @@
     } while(0)
 
 int main(void){
+    // line 3
     char A[11];
     A[0] = '\0';
+    // line 4
     char B[6];
     B[0] = '\0';
+    // line 5
     F77_STR_ASSIGN(A, "HELLO", 10);
+    // line 6
     F77_STR_ASSIGN(B, "WORLD", 5);
+    // line 7
     printf("%s %s\n", A, B);
     return 0;
 }

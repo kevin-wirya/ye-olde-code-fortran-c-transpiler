@@ -41,6 +41,7 @@ void CodeGenVisitor::visit(ImplicitNoneNode& node){
 }
 
 void CodeGenVisitor::visit(TypeDeclNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     std::string ctype="int";
     std::string char_suffix="";
     if(node.type_name=="REAL")ctype="float";
@@ -70,6 +71,7 @@ void CodeGenVisitor::visit(TypeDeclNode& node){
 }
 
 void CodeGenVisitor::visit(ArrayDeclNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     std::string ctype="int";
     int char_len = -1;
     if(node.type_name=="REAL")ctype="float";
@@ -105,6 +107,7 @@ void CodeGenVisitor::visit(CommonBlockNode& node){
 }
 
 void CodeGenVisitor::visit(IfNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    if(";
     if(node.condition)node.condition->accept(*this);
     os<<"){\n";
@@ -123,6 +126,7 @@ void CodeGenVisitor::visit(IfNode& node){
 }
 
 void CodeGenVisitor::visit(DoNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    for("<<node.loop_variable<<"=";
     if(node.start_expr)node.start_expr->accept(*this);
     os<<"; "<<node.loop_variable<<"<=";
@@ -138,8 +142,9 @@ void CodeGenVisitor::visit(DoNode& node){
 }
 
 void CodeGenVisitor::visit(AssignNode& node){
-    if (string_lengths.find(node.target_variable) != string_lengths.end()) {
-        int len = string_lengths[node.target_variable];
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
+    if(string_lengths.find(node.target_variable)!=string_lengths.end()){
+        int len=string_lengths[node.target_variable];
         os<<"    F77_STR_ASSIGN("<<node.target_variable;
         if(!node.index_expressions.empty()){
             os<<"[";
@@ -163,11 +168,12 @@ void CodeGenVisitor::visit(AssignNode& node){
 }
 
 void CodeGenVisitor::visit(PrintNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    printf(\"";
-    std::string fmt = "";
+    std::string fmt="";
     for(size_t i=0;i<node.expressions.size();++i){
         if(dynamic_cast<StringLiteralNode*>(node.expressions[i].get())){
-            fmt += "%s";
+            fmt+="%s";
         }else if(auto ident = dynamic_cast<IdentifierNode*>(node.expressions[i].get())){
             std::string type = getCType(ident->name);
             if(type=="float") fmt += "%f";
@@ -187,8 +193,9 @@ void CodeGenVisitor::visit(PrintNode& node){
 }
 
 void CodeGenVisitor::visit(ReadNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    scanf(\"";
-    std::string fmt = "";
+    std::string fmt="";
     for(size_t i=0;i<node.variables.size();++i){
         std::string type = getCType(node.variables[i]);
         if(type=="float") fmt += "%f";
@@ -206,6 +213,7 @@ void CodeGenVisitor::visit(ReadNode& node){
 }
 
 void CodeGenVisitor::visit(CallNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    "<<node.subroutine_name<<"(";
     for(size_t i=0;i<node.arguments.size();++i){
         os<<"&";
@@ -216,14 +224,17 @@ void CodeGenVisitor::visit(CallNode& node){
 }
 
 void CodeGenVisitor::visit(GotoNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    goto label_"<<node.target_label<<";\n";
 }
 
 void CodeGenVisitor::visit(ReturnNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"    return;\n";
 }
 
 void CodeGenVisitor::visit(ContinueNode& node){
+    if(node.line>0)os<<"    // line "<<node.line<<"\n";
     os<<"label_"<<node.label<<":;\n";
 }
 

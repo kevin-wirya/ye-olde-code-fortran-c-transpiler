@@ -489,23 +489,29 @@ std::unique_ptr<ASTNode> Parser::parseReturn() {
 }
 
 std::unique_ptr<ASTNode> Parser::parseStatement() {
+    int stmt_line=peek().line;
+    std::unique_ptr<ASTNode> stmt=nullptr;
     if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
         int label=std::stoi(peek().lexeme);
         advance();
-        if(match(TokenType::CONTINUE))return std::make_unique<ContinueNode>(label);
+        if(match(TokenType::CONTINUE))stmt=std::make_unique<ContinueNode>(label);
     }
-    if (check(TokenType::IMPLICIT))return parseImplicitNone();
-    if (check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL)||check(TokenType::CHARACTER))return parseDeclaration();
-    if (check(TokenType::COMMON))return parseCommonBlock();
-    if (check(TokenType::IF))return parseIf();
-    if (check(TokenType::DO))return parseDo();
-    if (check(TokenType::GOTO))return parseGoto();
-    if (check(TokenType::CONTINUE))return parseContinue();
-    if (check(TokenType::PRINT))return parsePrint();
-    if (check(TokenType::READ))return parseRead();
-    if (check(TokenType::CALL))return parseCall();
-    if (check(TokenType::RETURN))return parseReturn();
-    if (check(TokenType::IDENTIFIER))return parseAssign();
-    advance();
-    return nullptr;
+    else if(check(TokenType::IMPLICIT))stmt=parseImplicitNone();
+    else if(check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL)||check(TokenType::CHARACTER))stmt=parseDeclaration();
+    else if(check(TokenType::COMMON))stmt=parseCommonBlock();
+    else if(check(TokenType::IF))stmt=parseIf();
+    else if(check(TokenType::DO))stmt=parseDo();
+    else if(check(TokenType::GOTO))stmt=parseGoto();
+    else if(check(TokenType::CONTINUE))stmt=parseContinue();
+    else if(check(TokenType::PRINT))stmt=parsePrint();
+    else if(check(TokenType::READ))stmt=parseRead();
+    else if(check(TokenType::CALL))stmt=parseCall();
+    else if(check(TokenType::RETURN))stmt=parseReturn();
+    else if(check(TokenType::IDENTIFIER))stmt=parseAssign();
+    else{
+        advance();
+        return nullptr;
+    }
+    if(stmt)stmt->line=stmt_line;
+    return stmt;
 }
