@@ -1,6 +1,6 @@
 # Ye Olde Code: Fortran 77 to C Transpiler
 
-Transpiler ini adalah program utilitas berbasis C++ yang mengonversi kode sumber **Fortran 77** (*fixed-form*) menjadi kode sumber bahasa **C** yang ekuivalen dan siap dikompilasi oleh compiler C standar seperti `gcc`.
+Transpiler ini adalah program utilitas berbasis C++ yang mengonversi kode sumber **Fortran 77** menjadi kode sumber bahasa **C** yang ekuivalen dan siap dikompilasi oleh compiler C standar (seperti `gcc`).
 
 ---
 
@@ -10,12 +10,12 @@ Sebelum membangun (*build*) transpiler ini, pastikan sistem Anda telah terinstal
 - **C++ Compiler** (Mendukung standar C++17 atau lebih baru, misal: `g++` / MinGW-w64).
 - **C Compiler** (Untuk menguji/mengompilasi hasil transpilasi C, misal: `gcc`).
 - **CMake** (Versi 3.10 atau yang lebih baru).
-- **Flex** (Fast Lexical Analyzer Generator, untuk generator Lexer `.l`).
-- **Make** (Utilitas *build automation*).
+- **Flex** (Fast Lexical Analyzer Generator, untuk kompilasi Lexer `.l`).
+- **Make / MinGW Makefiles** (Opsional, untuk utilitas *build*).
 
 ---
 
-## 🚀 Instalasi & Kompilasi Transpiler (Menggunakan `make`)
+## 🚀 Instalasi & Kompilasi Transpiler
 
 Proyek ini telah dilengkapi dengan `Makefile` untuk mempermudah kompilasi dan eksekusi.
 
@@ -94,7 +94,7 @@ Kode Fortran 77 ---> [Lexer (Flex)] ---> [Parser] ---> [Semantic Analyzer] ---> 
 
 Berikut adalah 3 program uji Fortran 77 beserta kode C hasil transpilasi dan bukti eksekusinya:
 
-### 1. Program Uji 1: Aritmatika, Logika, & Percabangan (`tests/sample_1.f`)
+### 1. Program Uji 1 (`tests/sample_1.f`)
 **Kode Fortran 77 Original:**
 ```fortran
       PROGRAM ARITH
@@ -150,7 +150,7 @@ int main(void){
     return 0;
 }
 ```
-**Bukti Eksekusi (GCC output):**
+**GCC output:**
 ```text
 50 1.750000
 ```
@@ -223,14 +223,14 @@ label_10:;
     return 0;
 }
 ```
-**Bukti Eksekusi (GCC output):**
+**GCC output:**
 ```text
 21
 ```
 
 ---
 
-### 3. Program Uji 3: Subroutine, COMMON Block, Pass-By-Reference & Fitur Bonus (`tests/sample_bonus_2.f`)
+### 3. Program Uji 3 (`tests/sample_bonus_2.f`)
 **Kode Fortran 77 Original:**
 ```fortran
       PROGRAM BONUS
