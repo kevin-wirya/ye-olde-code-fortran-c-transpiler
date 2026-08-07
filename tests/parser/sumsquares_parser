@@ -1,0 +1,45 @@
+[ProgramNode] SUMSQUARES
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N, I
+├── [CommonBlockNode] /ACC/: RUNTOTAL, CALLCNT
+├── [TypeDeclNode] INTEGER: RUNTOTAL, CALLCNT
+├── [AssignNode] RUNTOTAL =
+│   └── Value:
+│       └── [NumberLiteralNode] 0
+├── [AssignNode] CALLCNT =
+│   └── Value:
+│       └── [NumberLiteralNode] 0
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1
+│   ├── End:
+│   │   └── [IdentifierNode] N
+│   └── Body:
+│       ├── [CallNode] Subroutine: ADDSQUARE
+│       │   └── [IdentifierNode] I
+│       └── [ContinueNode] Label: 10
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] RUNTOTAL
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] CALLCNT
+└── [SubroutineNode] ADDSQUARE(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: VAL
+    ├── [CommonBlockNode] /ACC/: TOTAL, CNT
+    ├── [TypeDeclNode] INTEGER: TOTAL, CNT
+    ├── [AssignNode] TOTAL =
+    │   └── Value:
+    │       └── [BinaryOpNode] +
+    │           ├── [IdentifierNode] TOTAL
+    │           └── [BinaryOpNode] *
+    │               ├── [IdentifierNode] VAL
+    │               └── [IdentifierNode] VAL
+    ├── [AssignNode] CNT =
+    │   └── Value:
+    │       └── [BinaryOpNode] +
+    │           ├── [IdentifierNode] CNT
+    │           └── [NumberLiteralNode] 1
+    └── [ReturnNode]

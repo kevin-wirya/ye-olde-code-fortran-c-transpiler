@@ -1,0 +1,80 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     SUMSQUARES   program      VOID      0     1     0     0     0    
+5     N            variable     INTEGER   0     1     0     0     0    
+6     I            variable     INTEGER   0     1     0     4     5    
+7     RUNTOTAL     variable     INTEGER   0     1     0     8     6    
+8     CALLCNT      variable     INTEGER   0     1     0     12    7    
+9     ADDSQUARE    subroutine   VOID      1     1     0     0     0    
+10    VAL          variable     INTEGER   0     1     1     0     0    
+11    TOTAL        variable     INTEGER   0     1     1     4     10   
+12    CNT          variable     INTEGER   0     1     1     8     11   
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     SUMSQUARES   8     0     0     16   
+1     ADDSQUARE    12    0     0     12   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] SUMSQUARES
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: N, I
+├── [CommonBlockNode] /ACC/: RUNTOTAL, CALLCNT
+├── [TypeDeclNode] INTEGER: RUNTOTAL, CALLCNT
+├── [AssignNode] RUNTOTAL =
+│   └── Value:
+│       └── [NumberLiteralNode] 0 (type: INTEGER)
+├── [AssignNode] CALLCNT =
+│   └── Value:
+│       └── [NumberLiteralNode] 0 (type: INTEGER)
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5 (type: INTEGER)
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   ├── End:
+│   │   └── [IdentifierNode] N (type: INTEGER)
+│   └── Body:
+│       ├── [CallNode] Subroutine: ADDSQUARE
+│       │   └── [IdentifierNode] I (type: INTEGER)
+│       └── [ContinueNode] Label: 10
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] RUNTOTAL (type: INTEGER)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] CALLCNT (type: INTEGER)
+└── [SubroutineNode] ADDSQUARE(VAL)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: VAL
+    ├── [CommonBlockNode] /ACC/: TOTAL, CNT
+    ├── [TypeDeclNode] INTEGER: TOTAL, CNT
+    ├── [AssignNode] TOTAL =
+    │   └── Value:
+    │       └── [BinaryOpNode] + (type: INTEGER)
+    │           ├── [IdentifierNode] TOTAL (type: INTEGER)
+    │           └── [BinaryOpNode] * (type: INTEGER)
+    │               ├── [IdentifierNode] VAL (type: INTEGER)
+    │               └── [IdentifierNode] VAL (type: INTEGER)
+    ├── [AssignNode] CNT =
+    │   └── Value:
+    │       └── [BinaryOpNode] + (type: INTEGER)
+    │           ├── [IdentifierNode] CNT (type: INTEGER)
+    │           └── [NumberLiteralNode] 1 (type: INTEGER)
+    └── [ReturnNode]
+===============================================

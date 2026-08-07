@@ -38,6 +38,7 @@ class Parser{
         std::vector<Token> tokens;
         size_t current=0;
         std::vector<std::string> syntax_errors;
+        std::vector<int> active_do_labels;
     public:
         explicit Parser(std::vector<Token> toks):tokens(std::move(toks)){}
         const std::vector<std::string>& getErrors() const{return syntax_errors;}
@@ -83,6 +84,7 @@ class Parser{
         std::unique_ptr<ASTNode> parseAssign();
         std::unique_ptr<ASTNode> parseCall();
         std::unique_ptr<ASTNode> parseReturn();
+        std::unique_ptr<ASTNode> parseStop();
         std::unique_ptr<ASTNode> parseStatement();
 };
 

@@ -1,0 +1,92 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     ORDERPAIR    program      VOID      0     1     0     0     0    
+5     X            variable     INTEGER   0     1     0     0     0    
+6     Y            variable     INTEGER   0     1     0     4     5    
+7     SWAPPED      variable     LOGICAL   0     1     0     8     6    
+8     ORDER        subroutine   VOID      1     1     0     0     0    
+9     A            variable     INTEGER   0     1     1     0     0    
+10    B            variable     INTEGER   0     1     1     4     9    
+11    FLAG         variable     LOGICAL   0     1     1     8     10   
+12    TEMP         variable     INTEGER   0     1     1     12    11   
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     ORDERPAIR    7     0     0     12   
+1     ORDER        12    0     0     16   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] ORDERPAIR
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: X, Y
+├── [TypeDeclNode] LOGICAL: SWAPPED
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 10 (type: INTEGER)
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [NumberLiteralNode] 3 (type: INTEGER)
+├── [AssignNode] SWAPPED =
+│   └── Value:
+│       └── [StringLiteralNode] .FALSE. (type: STRING)
+├── [CallNode] Subroutine: ORDER
+│   ├── [IdentifierNode] X (type: INTEGER)
+│   ├── [IdentifierNode] Y (type: INTEGER)
+│   └── [IdentifierNode] SWAPPED (type: LOGICAL)
+├── [IfNode]
+│   ├── Condition:
+│   │   └── [IdentifierNode] SWAPPED (type: LOGICAL)
+│   ├── Then:
+│   │   └── [PrintNode] Format: *
+│   │       └── [StringLiteralNode] 'SWAPPED' (type: STRING)
+│   └── Else:
+│       └── [PrintNode] Format: *
+│           └── [StringLiteralNode] 'NOT SWAPPED' (type: STRING)
+├── [PrintNode] Format: *
+│   ├── [IdentifierNode] X (type: INTEGER)
+│   └── [IdentifierNode] Y (type: INTEGER)
+└── [SubroutineNode] ORDER(A, B, FLAG)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: A, B
+    ├── [TypeDeclNode] LOGICAL: FLAG
+    ├── [TypeDeclNode] INTEGER: TEMP
+    ├── [IfNode]
+    │   ├── Condition:
+    │   │   └── [BinaryOpNode] .GT. (type: LOGICAL)
+    │   │       ├── [IdentifierNode] A (type: INTEGER)
+    │   │       └── [IdentifierNode] B (type: INTEGER)
+    │   ├── Then:
+    │   │   ├── [AssignNode] TEMP =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] A (type: INTEGER)
+    │   │   ├── [AssignNode] A =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] B (type: INTEGER)
+    │   │   ├── [AssignNode] B =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] TEMP (type: INTEGER)
+    │   │   └── [AssignNode] FLAG =
+    │   │       └── Value:
+    │   │           └── [StringLiteralNode] .TRUE. (type: STRING)
+    │   └── Else:
+    │       └── [AssignNode] FLAG =
+    │           └── Value:
+    │               └── [StringLiteralNode] .FALSE. (type: STRING)
+    └── [ReturnNode]
+===============================================

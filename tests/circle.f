@@ -1,0 +1,33 @@
+      PROGRAM CIRCLEAREA
+      IMPLICIT NONE
+      REAL R, AREA1, AREA2, BIGGER
+      INTEGER COUNT
+      COMMON /STATS/ COUNT
+
+      COUNT = 0
+
+      R = 2.0
+      AREA1 = CALCAREA(R)
+      PRINT *, AREA1
+
+      R = 3.0
+      AREA2 = CALCAREA(R)
+      PRINT *, AREA2
+
+      BIGGER = MAX(AREA1, AREA2)
+      PRINT *, BIGGER
+      PRINT *, COUNT
+      END
+
+
+      REAL FUNCTION CALCAREA(RADIUS)
+      IMPLICIT NONE
+      REAL RADIUS
+      INTEGER CNT
+      COMMON /STATS/ CNT
+
+      CALCAREA = 3.14159 * RADIUS * RADIUS
+      CNT = CNT + 1
+
+      RETURN
+      END

@@ -30,17 +30,52 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include<unordered_map>
+#include <unordered_set>
+#include <algorithm>
 
 class CodeGenVisitor: public ASTVisitor{
     private:
         std::ostream& os;
         const std::unordered_map<std::string, CommonBlockInfo>* common_blocks;
         const std::vector<TabEntry>* tab;
+        bool in_subprogram = false;
+        std::unordered_set<std::string> current_params;
+        std::string current_func_name;
+        std::string current_func_ret_var;
+        std::string toLower(std::string s) const{
+            std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+            return s;
+        }
+
+        bool isCommonVar(const std::string& v) const{
+            if (common_blocks) {
+                for (const auto& pair : *common_blocks) {
+                    for (const auto& cb_var : pair.second.variable_names) {
+                        if (toLower(cb_var) == toLower(v)) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        std::string getVarName(const std::string& name) const {
+            if (common_blocks) {
+                for (const auto& pair : *common_blocks) {
+                    for (const auto& var : pair.second.variable_names) {
+                        if (toLower(var) == toLower(name)) {
+                            return toLower(pair.first) + "." + toLower(name);
+                        }
+                    }
+                }
+            }
+            return toLower(name);
+        }
+
         std::string getCType(const std::string& name) const{
             if(!tab) return "int";
+            std::string lname=toLower(name);
             for(const auto& entry: *tab){
-                if(entry.id==name&&(entry.obj=="variable"||entry.obj=="array")){
+                if(toLower(entry.id)==lname&&(entry.obj=="variable"||entry.obj=="array")){
                     if(entry.type=="REAL")return "float";
                     if(entry.type=="LOGICAL")return "bool";
                     if(entry.type.find("CHARACTER")==0)return "char";
@@ -68,16 +103,17 @@ class CodeGenVisitor: public ASTVisitor{
             os<<"    } while(0)\n\n";
             if(common_blocks){
                 for(const auto& pair: *common_blocks){
-                    os<<"struct "<<pair.first<<"_t {\n";
+                    os<<"struct "<<toLower(pair.first)<<"_t {\n";
                     for(const auto& var: pair.second.variable_names){
-                        os<<"    "<<getCType(var)<<" "<<var<<";\n";
+                        os<<"    "<<getCType(var)<<" "<<toLower(var)<<";\n";
                     }
-                    os<<"} "<<pair.first<<";\n\n";
+                    os<<"} "<<toLower(pair.first)<<";\n\n";
                 }
             }
         }
         std::unordered_map<std::string, std::vector<std::string>> array_dims;
         std::unordered_map<std::string, int> string_lengths;
+        std::unordered_set<int> emitted_labels;
         void printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices);
         void visit(ProgramNode& node) override;
         void visit(SubroutineNode& node) override;

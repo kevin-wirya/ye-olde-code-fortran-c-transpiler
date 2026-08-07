@@ -1,0 +1,66 @@
+[ProgramNode] EUCLID
+├── [PrintNode] Format: *
+│   └── [StringLiteralNode] 'A?'
+├── [ReadNode] Format: * Vars: NA
+├── [IfNode]
+│   ├── Condition:
+│   │   └── [BinaryOpNode] .LE.
+│   │       ├── [IdentifierNode] NA
+│   │       └── [NumberLiteralNode] 0
+│   └── Then:
+│       ├── [PrintNode] Format: *
+│       │   └── [StringLiteralNode] 'A must be a positive integer.'
+│       └── [ReturnNode]
+├── [PrintNode] Format: *
+│   └── [StringLiteralNode] 'B?'
+├── [ReadNode] Format: * Vars: NB
+├── [IfNode]
+│   ├── Condition:
+│   │   └── [BinaryOpNode] .LE.
+│   │       ├── [IdentifierNode] NB
+│   │       └── [NumberLiteralNode] 0
+│   └── Then:
+│       ├── [PrintNode] Format: *
+│       │   └── [StringLiteralNode] 'B must be a positive integer.'
+│       └── [ReturnNode]
+├── [PrintNode] Format: *
+│   ├── [StringLiteralNode] 'The GCD of'
+│   ├── [IdentifierNode] NA
+│   ├── [StringLiteralNode] ' and'
+│   ├── [IdentifierNode] NB
+│   ├── [StringLiteralNode] ' is'
+│   ├── [ArrayAccessNode] NGCD
+│   │   ├── [IdentifierNode] NA
+│   │   └── [IdentifierNode] NB
+│   └── [StringLiteralNode] '.'
+├── [ReturnNode]
+└── [FunctionNode] NGCD -> INTEGER(NA, NB)
+    ├── [AssignNode] IA =
+    │   └── Value:
+    │       └── [IdentifierNode] NA
+    ├── [AssignNode] IB =
+    │   └── Value:
+    │       └── [IdentifierNode] NB
+    ├── [ContinueNode] Label: 1
+    ├── [IfNode]
+    │   ├── Condition:
+    │   │   └── [BinaryOpNode] .NE.
+    │   │       ├── [IdentifierNode] IB
+    │   │       └── [NumberLiteralNode] 0
+    │   └── Then:
+    │       ├── [AssignNode] ITEMP =
+    │       │   └── Value:
+    │       │       └── [IdentifierNode] IA
+    │       ├── [AssignNode] IA =
+    │       │   └── Value:
+    │       │       └── [IdentifierNode] IB
+    │       ├── [AssignNode] IB =
+    │       │   └── Value:
+    │       │       └── [ArrayAccessNode] MOD
+    │       │           ├── [IdentifierNode] ITEMP
+    │       │           └── [IdentifierNode] IB
+    │       └── [GotoNode] Target: 1
+    ├── [AssignNode] NGCD =
+    │   └── Value:
+    │       └── [IdentifierNode] IA
+    └── [ReturnNode]

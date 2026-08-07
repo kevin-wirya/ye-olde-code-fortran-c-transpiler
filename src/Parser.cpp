@@ -150,7 +150,7 @@ std::unique_ptr<ASTNode> Parser::parseSubroutine() {
 }
 
 std::unique_ptr<ASTNode> Parser::parseFunction() {
-    std::string ret_type="REAL"; // default
+    std::string ret_type="";
     if(match(TokenType::INTEGER))ret_type="INTEGER";
     else if(match(TokenType::REAL))ret_type="REAL";
     else if(match(TokenType::LOGICAL))ret_type="LOGICAL";
@@ -163,6 +163,10 @@ std::unique_ptr<ASTNode> Parser::parseFunction() {
     }
     consume(TokenType::FUNCTION,"Expected FUNCTION keyword");
     Token name_token=consume(TokenType::IDENTIFIER,"Expected function name identifier");
+    if(ret_type.empty()){
+        char fc=toupper(name_token.lexeme[0]);
+        ret_type=(fc>='I'&&fc<='N')?"INTEGER":"REAL";
+    }
     std::vector<std::string> params;
     if(match(TokenType::LPAREN)){
         if(!check(TokenType::RPAREN)){
@@ -252,18 +256,21 @@ std::unique_ptr<ASTNode> Parser::parseIf(){
     consume(TokenType::LPAREN,"Expected '(' after IF");
     auto condition=parseExpression();
     consume(TokenType::RPAREN,"Expected ')' after IF condition");
-    consume(TokenType::THEN,"Expected THEN after IF condition");
     std::vector<std::unique_ptr<ASTNode>> then_body;
     std::vector<std::unique_ptr<ASTNode>> else_body;
-    while(!isAtEnd()&&!check(TokenType::ELSE)&&!check(TokenType::ENDIF)){
+    if(match(TokenType::THEN)){
+        while(!isAtEnd()&&!check(TokenType::ELSE)&&!check(TokenType::ENDIF)){
+            then_body.push_back(parseStatement());
+        }
+        if(match(TokenType::ELSE)){
+            while(!isAtEnd()&&!check(TokenType::ENDIF)){
+                else_body.push_back(parseStatement());
+            }
+        }
+        consume(TokenType::ENDIF,"Expected ENDIF after IF block");
+    } else {
         then_body.push_back(parseStatement());
     }
-    if(match(TokenType::ELSE)){
-        while(!isAtEnd()&&!check(TokenType::ENDIF)){
-            else_body.push_back(parseStatement());
-        }
-    }
-    consume(TokenType::ENDIF,"Expected ENDIF statement");
     return std::make_unique<IfNode>(std::move(condition),std::move(then_body),std::move(else_body));
 }
 
@@ -280,14 +287,19 @@ std::unique_ptr<ASTNode> Parser::parseDo(){
     if(match(TokenType::COMMA)){
         step_expr=parseExpression();
     }
+    active_do_labels.push_back(target_label);
     std::vector<std::unique_ptr<ASTNode>> body;
     while(!isAtEnd()){
         if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
             if(std::stoi(peek().lexeme)==target_label){
-                advance();
-                if(match(TokenType::CONTINUE)){
-                    body.push_back(std::make_unique<ContinueNode>(target_label));
+                int cnt=0;
+                for(int l:active_do_labels)if(l==target_label)cnt++;
+                if(cnt==1){
+                    advance();
+                    if(match(TokenType::CONTINUE))body.push_back(std::make_unique<ContinueNode>(target_label));
+                } else body.push_back(std::make_unique<ContinueNode>(target_label));
                 }
+                active_do_labels.pop_back();
                 break;
             }
         }
@@ -501,13 +513,19 @@ std::unique_ptr<ASTNode> Parser::parseReturn() {
     return std::make_unique<ReturnNode>();
 }
 
+std::unique_ptr<ASTNode> Parser::parseStop() {
+    consume(TokenType::STOP,"Expected STOP keyword");
+    return std::make_unique<ReturnNode>();
+}
+
 std::unique_ptr<ASTNode> Parser::parseStatement() {
     int stmt_line=peek().line;
     std::unique_ptr<ASTNode> stmt=nullptr;
     if(check(TokenType::INT_LITERAL)||check(TokenType::LABEL)){
         int label=std::stoi(peek().lexeme);
         advance();
-        if(match(TokenType::CONTINUE))stmt=std::make_unique<ContinueNode>(label);
+        if(match(TokenType::CONTINUE)) return std::make_unique<ContinueNode>(label);
+        return std::make_unique<ContinueNode>(label);
     }
     else if(check(TokenType::IMPLICIT))stmt=parseImplicitNone();
     else if(check(TokenType::INTEGER)||check(TokenType::REAL)||check(TokenType::LOGICAL)||check(TokenType::CHARACTER))stmt=parseDeclaration();
@@ -520,6 +538,7 @@ std::unique_ptr<ASTNode> Parser::parseStatement() {
     else if(check(TokenType::READ))stmt=parseRead();
     else if(check(TokenType::CALL))stmt=parseCall();
     else if(check(TokenType::RETURN))stmt=parseReturn();
+    else if(check(TokenType::STOP))stmt=parseStop();
     else if(check(TokenType::IDENTIFIER))stmt=parseAssign();
     else{
         advance();

@@ -1,0 +1,66 @@
+[ProgramNode] MATSUM
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER A(3, 2)
+├── [TypeDeclNode] INTEGER: I, J, TOTAL
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 1
+│   │   └── [NumberLiteralNode] 1
+│   └── Value:
+│       └── [NumberLiteralNode] 1
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 2
+│   │   └── [NumberLiteralNode] 1
+│   └── Value:
+│       └── [NumberLiteralNode] 2
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 3
+│   │   └── [NumberLiteralNode] 1
+│   └── Value:
+│       └── [NumberLiteralNode] 3
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 1
+│   │   └── [NumberLiteralNode] 2
+│   └── Value:
+│       └── [NumberLiteralNode] 4
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 2
+│   │   └── [NumberLiteralNode] 2
+│   └── Value:
+│       └── [NumberLiteralNode] 5
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 3
+│   │   └── [NumberLiteralNode] 2
+│   └── Value:
+│       └── [NumberLiteralNode] 6
+├── [AssignNode] TOTAL =
+│   └── Value:
+│       └── [NumberLiteralNode] 0
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1
+│   ├── End:
+│   │   └── [NumberLiteralNode] 3
+│   └── Body:
+│       ├── [DoNode] Label:10, LoopVar:J
+│       │   ├── Start:
+│       │   │   └── [NumberLiteralNode] 1
+│       │   ├── End:
+│       │   │   └── [NumberLiteralNode] 2
+│       │   └── Body:
+│       │       ├── [AssignNode] TOTAL =
+│       │       │   └── Value:
+│       │       │       └── [BinaryOpNode] +
+│       │       │           ├── [IdentifierNode] TOTAL
+│       │       │           └── [ArrayAccessNode] A
+│       │       │               ├── [IdentifierNode] I
+│       │       │               └── [IdentifierNode] J
+│       │       └── [ContinueNode] Label: 10
+│       └── [ContinueNode] Label: 10
+└── [PrintNode] Format: *
+    └── [IdentifierNode] TOTAL

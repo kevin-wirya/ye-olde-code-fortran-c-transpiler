@@ -1,0 +1,53 @@
+[ProgramNode] CIRCLEAREA
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] REAL: R, AREA1, AREA2, BIGGER
+├── [TypeDeclNode] INTEGER: COUNT
+├── [CommonBlockNode] /STATS/: COUNT
+├── [AssignNode] COUNT =
+│   └── Value:
+│       └── [NumberLiteralNode] 0
+├── [AssignNode] R =
+│   └── Value:
+│       └── [NumberLiteralNode] 2.0
+├── [AssignNode] AREA1 =
+│   └── Value:
+│       └── [ArrayAccessNode] CALCAREA
+│           └── [IdentifierNode] R
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] AREA1
+├── [AssignNode] R =
+│   └── Value:
+│       └── [NumberLiteralNode] 3.0
+├── [AssignNode] AREA2 =
+│   └── Value:
+│       └── [ArrayAccessNode] CALCAREA
+│           └── [IdentifierNode] R
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] AREA2
+├── [AssignNode] BIGGER =
+│   └── Value:
+│       └── [ArrayAccessNode] MAX
+│           ├── [IdentifierNode] AREA1
+│           └── [IdentifierNode] AREA2
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] BIGGER
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] COUNT
+└── [FunctionNode] CALCAREA -> REAL(RADIUS)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] REAL: RADIUS
+    ├── [TypeDeclNode] INTEGER: CNT
+    ├── [CommonBlockNode] /STATS/: CNT
+    ├── [AssignNode] CALCAREA =
+    │   └── Value:
+    │       └── [BinaryOpNode] *
+    │           ├── [BinaryOpNode] *
+    │           │   ├── [NumberLiteralNode] 3.14159
+    │           │   └── [IdentifierNode] RADIUS
+    │           └── [IdentifierNode] RADIUS
+    ├── [AssignNode] CNT =
+    │   └── Value:
+    │       └── [BinaryOpNode] +
+    │           ├── [IdentifierNode] CNT
+    │           └── [NumberLiteralNode] 1
+    └── [ReturnNode]

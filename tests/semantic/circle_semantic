@@ -1,0 +1,88 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     CIRCLEAREA   program      VOID      0     1     0     0     0    
+5     R            variable     REAL      0     1     0     0     0    
+6     AREA1        variable     REAL      0     1     0     4     5    
+7     AREA2        variable     REAL      0     1     0     8     6    
+8     BIGGER       variable     REAL      0     1     0     12    7    
+9     COUNT        variable     INTEGER   0     1     0     16    8    
+10    CALCAREA     function     REAL      1     1     0     0     0    
+11    RADIUS       variable     REAL      0     1     1     0     0    
+12    CNT          variable     INTEGER   0     1     1     4     11   
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     CIRCLEAREA   9     0     0     20   
+1     CALCAREA     12    0     0     8    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] CIRCLEAREA
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] REAL: R, AREA1, AREA2, BIGGER
+├── [TypeDeclNode] INTEGER: COUNT
+├── [CommonBlockNode] /STATS/: COUNT
+├── [AssignNode] COUNT =
+│   └── Value:
+│       └── [NumberLiteralNode] 0 (type: INTEGER)
+├── [AssignNode] R =
+│   └── Value:
+│       └── [NumberLiteralNode] 2.0 (type: REAL)
+├── [AssignNode] AREA1 =
+│   └── Value:
+│       └── [ArrayAccessNode] CALCAREA (type: REAL)
+│           └── [IdentifierNode] R (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] AREA1 (type: REAL)
+├── [AssignNode] R =
+│   └── Value:
+│       └── [NumberLiteralNode] 3.0 (type: REAL)
+├── [AssignNode] AREA2 =
+│   └── Value:
+│       └── [ArrayAccessNode] CALCAREA (type: REAL)
+│           └── [IdentifierNode] R (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] AREA2 (type: REAL)
+├── [AssignNode] BIGGER =
+│   └── Value:
+│       └── [ArrayAccessNode] MAX (type: REAL)
+│           ├── [IdentifierNode] AREA1 (type: REAL)
+│           └── [IdentifierNode] AREA2 (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] BIGGER (type: REAL)
+├── [PrintNode] Format: *
+│   └── [IdentifierNode] COUNT (type: INTEGER)
+└── [FunctionNode] CALCAREA -> REAL(RADIUS)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] REAL: RADIUS
+    ├── [TypeDeclNode] INTEGER: CNT
+    ├── [CommonBlockNode] /STATS/: CNT
+    ├── [AssignNode] CALCAREA =
+    │   └── Value:
+    │       └── [BinaryOpNode] * (type: REAL)
+    │           ├── [BinaryOpNode] * (type: REAL)
+    │           │   ├── [NumberLiteralNode] 3.14159 (type: REAL)
+    │           │   └── [IdentifierNode] RADIUS (type: REAL)
+    │           └── [IdentifierNode] RADIUS (type: REAL)
+    ├── [AssignNode] CNT =
+    │   └── Value:
+    │       └── [BinaryOpNode] + (type: INTEGER)
+    │           ├── [IdentifierNode] CNT (type: INTEGER)
+    │           └── [NumberLiteralNode] 1 (type: INTEGER)
+    └── [ReturnNode]
+===============================================

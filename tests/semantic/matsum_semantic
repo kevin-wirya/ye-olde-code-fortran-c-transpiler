@@ -1,0 +1,96 @@
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     MATSUM       program      VOID      0     1     0     0     0    
+5     A            array        INTEGER   0     1     0     0     0    
+6     I            variable     INTEGER   0     1     0     24    5    
+7     J            variable     INTEGER   0     1     0     28    6    
+8     TOTAL        variable     INTEGER   0     1     0     32    7    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     MATSUM       8     0     0     36   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+0     A            INTEGER   INTEGER   0     1     2     4     24   
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] MATSUM
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER A(3, 2)
+├── [TypeDeclNode] INTEGER: I, J, TOTAL
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 1 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 1 (type: INTEGER)
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 2 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 2 (type: INTEGER)
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 3 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 3 (type: INTEGER)
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 1 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 2 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 4 (type: INTEGER)
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 2 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 2 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 5 (type: INTEGER)
+├── [AssignNode] A(<index>, <index>) =
+│   ├── Indices:
+│   │   ├── [NumberLiteralNode] 3 (type: INTEGER)
+│   │   └── [NumberLiteralNode] 2 (type: INTEGER)
+│   └── Value:
+│       └── [NumberLiteralNode] 6 (type: INTEGER)
+├── [AssignNode] TOTAL =
+│   └── Value:
+│       └── [NumberLiteralNode] 0 (type: INTEGER)
+├── [DoNode] Label:10, LoopVar:I
+│   ├── Start:
+│   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│   ├── End:
+│   │   └── [NumberLiteralNode] 3 (type: INTEGER)
+│   └── Body:
+│       ├── [DoNode] Label:10, LoopVar:J
+│       │   ├── Start:
+│       │   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+│       │   ├── End:
+│       │   │   └── [NumberLiteralNode] 2 (type: INTEGER)
+│       │   └── Body:
+│       │       ├── [AssignNode] TOTAL =
+│       │       │   └── Value:
+│       │       │       └── [BinaryOpNode] + (type: INTEGER)
+│       │       │           ├── [IdentifierNode] TOTAL (type: INTEGER)
+│       │       │           └── [ArrayAccessNode] A (type: INTEGER)
+│       │       │               ├── [IdentifierNode] I (type: INTEGER)
+│       │       │               └── [IdentifierNode] J (type: INTEGER)
+│       │       └── [ContinueNode] Label: 10
+│       └── [ContinueNode] Label: 10
+└── [PrintNode] Format: *
+    └── [IdentifierNode] TOTAL (type: INTEGER)
+===============================================

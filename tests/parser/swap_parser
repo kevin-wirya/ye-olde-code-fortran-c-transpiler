@@ -1,0 +1,57 @@
+[ProgramNode] ORDERPAIR
+├── [ImplicitNoneNode]
+├── [TypeDeclNode] INTEGER: X, Y
+├── [TypeDeclNode] LOGICAL: SWAPPED
+├── [AssignNode] X =
+│   └── Value:
+│       └── [NumberLiteralNode] 10
+├── [AssignNode] Y =
+│   └── Value:
+│       └── [NumberLiteralNode] 3
+├── [AssignNode] SWAPPED =
+│   └── Value:
+│       └── [StringLiteralNode] .FALSE.
+├── [CallNode] Subroutine: ORDER
+│   ├── [IdentifierNode] X
+│   ├── [IdentifierNode] Y
+│   └── [IdentifierNode] SWAPPED
+├── [IfNode]
+│   ├── Condition:
+│   │   └── [IdentifierNode] SWAPPED
+│   ├── Then:
+│   │   └── [PrintNode] Format: *
+│   │       └── [StringLiteralNode] 'SWAPPED'
+│   └── Else:
+│       └── [PrintNode] Format: *
+│           └── [StringLiteralNode] 'NOT SWAPPED'
+├── [PrintNode] Format: *
+│   ├── [IdentifierNode] X
+│   └── [IdentifierNode] Y
+└── [SubroutineNode] ORDER(A, B, FLAG)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: A, B
+    ├── [TypeDeclNode] LOGICAL: FLAG
+    ├── [TypeDeclNode] INTEGER: TEMP
+    ├── [IfNode]
+    │   ├── Condition:
+    │   │   └── [BinaryOpNode] .GT.
+    │   │       ├── [IdentifierNode] A
+    │   │       └── [IdentifierNode] B
+    │   ├── Then:
+    │   │   ├── [AssignNode] TEMP =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] A
+    │   │   ├── [AssignNode] A =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] B
+    │   │   ├── [AssignNode] B =
+    │   │   │   └── Value:
+    │   │   │       └── [IdentifierNode] TEMP
+    │   │   └── [AssignNode] FLAG =
+    │   │       └── Value:
+    │   │           └── [StringLiteralNode] .TRUE.
+    │   └── Else:
+    │       └── [AssignNode] FLAG =
+    │           └── Value:
+    │               └── [StringLiteralNode] .FALSE.
+    └── [ReturnNode]

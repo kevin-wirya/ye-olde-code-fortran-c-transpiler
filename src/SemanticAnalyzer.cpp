@@ -108,6 +108,18 @@ void SemanticAnalyzer::visit(ProgramNode& node){
     tab.push_back({t_idx, node.name, "program", "VOID", b_idx, 1, current_level, 0, 0});
     current_btab_idx=b_idx;
     for(auto& stmt:node.body){
+        if(auto sub=dynamic_cast<SubroutineNode*>(stmt.get())){
+            Symbol sub_sym(sub->name,"VOID",SymbolKind::SUBROUTINE);
+            sub_sym.arity=static_cast<int>(sub->parameters.size());
+            symbol_table.declare(sub_sym);
+        }else if(auto func=dynamic_cast<FunctionNode*>(stmt.get())){
+            Symbol fn_sym(func->name,func->returnType.empty() ? "REAL":func->returnType,SymbolKind::FUNCTION);
+            fn_sym.arity=static_cast<int>(func->parameters.size());
+            symbol_table.declare(fn_sym);
+        }
+    }
+
+    for(auto& stmt:node.body){
         if(stmt)stmt->accept(*this);
     }
     if(!has_implicit_none)reportError("Semantic Error: IMPLICIT NONE is required in PROGRAM '" + node.name + "'");
@@ -313,15 +325,29 @@ void SemanticAnalyzer::visit(IdentifierNode& node){
 }
 
 void SemanticAnalyzer::visit(ArrayAccessNode& node) {
+    std::string upper_name=node.array_name;
+    for(auto& c:upper_name)c=toupper(c);
+    bool is_intrinsic=(upper_name=="MAX"||upper_name=="MIN"||upper_name=="ABS"||
+                         upper_name=="IABS"||upper_name=="FABS"||upper_name=="SQRT"||
+                         upper_name=="EXP"||upper_name=="LOG"||upper_name=="ALOG"||
+                         upper_name=="LOG10"||upper_name=="SIN"||upper_name=="COS"||
+                         upper_name=="TAN"||upper_name=="MOD"||upper_name=="INT"||
+                         upper_name=="REAL");
     const Symbol* sym=symbol_table.lookup(node.array_name);
-    if(!sym){
+    if(!sym&&!is_intrinsic){
         reportError("Semantic Error: Array or Function '" + node.array_name + "' used without declaration");
         node.inferred_type="UNKNOWN";
-    }else{
+    } else if (is_intrinsic) {
+        if (upper_name=="INT"||upper_name=="IABS"||upper_name=="MOD") {
+            node.inferred_type="INTEGER";
+        } else {
+            node.inferred_type="REAL";
+        }
+    } else {
         node.inferred_type=sym->type;
     }
-    for(auto& idx:node.indices){
-        if(idx)idx->accept(*this);
+    for (auto& idx : node.indices) {
+        if (idx) idx->accept(*this);
     }
 }
 
@@ -350,7 +376,6 @@ void SemanticAnalyzer::visit(BinaryOpNode& node){
         }
     }
 }
-
 
 void SemanticAnalyzer::visit(UnaryOpNode& node){
     if(node.operand)node.operand->accept(*this);
