@@ -115,14 +115,6 @@ C     Simple Program
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
 int main(void){
     // line 5
     int n, i;
@@ -132,7 +124,6 @@ int main(void){
     for(i=1; i<=n; i+=1){
     // line 8
     printf("%d\n", i);
-label_10:;
     }
     return 0;
 }
@@ -181,14 +172,6 @@ label_10:;
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
 int main(void){
     // line 3
     int a[6];
@@ -214,7 +197,6 @@ int main(void){
     for(j=1; j<=2; j+=1){
     // line 18
     total = (total + a[(((i)-1)+((j)-1)*3)]);
-label_10:;
     }
     }
     // line 21
@@ -255,14 +237,6 @@ label_10:;
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
 
 int main(void){
     // line 3
