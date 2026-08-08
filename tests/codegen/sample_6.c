@@ -12,7 +12,7 @@
         dest[len] = '\0'; \
     } while(0)
 
-void FILL(int* A, int* SZ);
+void fill(int* a, int* sz);
 
 int main(void){
     // line 5
@@ -22,22 +22,21 @@ int main(void){
     // line 7
     n = 5;
     // line 8
-    FILL(arr, &n);
+    fill(arr, &n);
     // line 9
     printf("%d\n", arr[(1 - 1)]);
     return 0;
 }
 
-void FILL(int* A, int* SZ){
+void fill(int* a, int* sz){
     // line 14
-    int i;
+    int sz, i;
     // line 15
     int a[10];
     // line 16
-    for(i=1; i<=(*SZ); i+=1){
+    for(i=1; i<=(*sz); i+=1){
     // line 17
     a[(i - 1)] = (i * 10);
-label_100:;
     }
     // line 19
     return;

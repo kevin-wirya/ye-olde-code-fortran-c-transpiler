@@ -48,16 +48,16 @@ void CodeGenVisitor::visit(ProgramNode& node){
         if(func_ret=="REAL")ret="float";
         else if(func_ret=="LOGICAL")ret="bool";
         else if(func_ret.find("CHARACTER")==0)ret="char*";
-        os<<ret<<" "<<func->name<<"(";
+        os<<ret<<" "<<toLower(func->name)<<"(";
         for(size_t i=0;i<func->parameters.size();++i){
-            os<<getCType(func->parameters[i])<<"* "<<func->parameters[i]<<(i+1<func->parameters.size()?", ":"");
+            os<<getCType(func->parameters[i])<<"* "<<toLower(func->parameters[i])<<(i+1<func->parameters.size()?", ":"");
         }
         os<<");\n";
     }
     for(auto sub:subroutines){
-        os<<"void "<<sub->name<<"(";
+        os<<"void "<<toLower(sub->name)<<"(";
         for(size_t i=0;i<sub->parameters.size();++i){
-            os <<getCType(sub->parameters[i])<<"* "<<sub->parameters[i]<<(i+1<sub->parameters.size()?", ":"");
+            os <<getCType(sub->parameters[i])<<"* "<<toLower(sub->parameters[i])<<(i+1<sub->parameters.size()?", ":"");
         }
         os<<");\n";
     }
@@ -101,20 +101,20 @@ void CodeGenVisitor::visit(SubroutineNode& node){
     in_subprogram=true;
     current_params.clear();
     for(const auto& p:node.parameters){
-        current_params.insert(p);
+        current_params.insert(toLower(p));
     }
     current_func_name="";
     current_func_ret_var="";
-    os<<"void "<<node.name<<"(";
+    os<<"void "<<toLower(node.name)<<"(";
     for(size_t i=0;i<node.parameters.size();++i){
-        os <<getCType(node.parameters[i])<<"* "<<node.parameters[i]<<(i+1<node.parameters.size()?", ":"");
+        os <<getCType(node.parameters[i])<<"* "<<toLower(node.parameters[i])<<(i+1<node.parameters.size()?", ":"");
     }
     os<<"){\n";
     if(tab){
         for(const auto& entry:*tab){
             if(entry.obj=="variable"&&entry.lev>0){
                 std::string var=entry.id;
-                if(current_params.find(var)==current_params.end()&&!isCommonVar(var)){
+                if(current_params.find(toLower(var))==current_params.end()&&!isCommonVar(var)){
                     bool explicitly_declared=false;
                     for(auto& s:node.body){
                         if(auto tnode=dynamic_cast<TypeDeclNode*>(s.get())){
@@ -143,10 +143,10 @@ void CodeGenVisitor::visit(FunctionNode& node){
     in_subprogram=true;
     current_params.clear();
     for(const auto& p:node.parameters){
-        current_params.insert(p);
+        current_params.insert(toLower(p));
     }
-    current_func_name=node.name;
-    current_func_ret_var=node.name+"_val";
+    current_func_name=toLower(node.name);
+    current_func_ret_var=toLower(node.name)+"_val";
     std::string func_ret=node.returnType;
     if(func_ret.empty()){
         char fc=toupper(node.name[0]);
@@ -155,9 +155,9 @@ void CodeGenVisitor::visit(FunctionNode& node){
     std::string ret="int";
     if(func_ret=="REAL") ret="float";
     else if(func_ret=="LOGICAL") ret="bool";
-    os<<ret<<" "<<node.name<<"(";
+    os<<ret<<" "<<toLower(node.name)<<"(";
     for(size_t i=0;i<node.parameters.size();++i){
-        os<<getCType(node.parameters[i])<<"* "<<node.parameters[i]<<(i+1<node.parameters.size()? ", " : "");
+        os<<getCType(node.parameters[i])<<"* "<<toLower(node.parameters[i])<<(i+1<node.parameters.size()? ", " : "");
     }
     os<<"){\n";
     os<<"    "<<ret<<" "<<current_func_ret_var<<";\n";
@@ -165,7 +165,7 @@ void CodeGenVisitor::visit(FunctionNode& node){
         for(const auto& entry:*tab){
             if(entry.obj=="variable"&&entry.lev>0){
                 std::string var=entry.id;
-                if(current_params.find(var)==current_params.end()&&!isCommonVar(var)&&toLower(var)!=toLower(node.name)){
+                if(current_params.find(toLower(var))==current_params.end()&&!isCommonVar(var)&&toLower(var)!=toLower(node.name)){
                     bool explicitly_declared=false;
                     for(auto& s:node.body){
                         if(auto tnode = dynamic_cast<TypeDeclNode*>(s.get())){
@@ -323,11 +323,11 @@ void CodeGenVisitor::visit(DoNode& node){
 
 void CodeGenVisitor::visit(AssignNode& node){
     if(node.line>0)os<<"    // line "<<node.line<<"\n";
-    std::string target = node.target_variable;
+    std::string target = toLower(node.target_variable);
     if(!current_func_name.empty()&&target==current_func_name){
         target = current_func_ret_var;
     } else if(in_subprogram && current_params.find(target) != current_params.end()){
-        if(!node.index_expressions.empty() || array_dims.find(target) != array_dims.end()){
+        if(!node.index_expressions.empty() || array_dims.find(node.target_variable) != array_dims.end()){
             target = getVarName(target);
         } else {
             target = "(*" + target + ")";
@@ -407,13 +407,13 @@ void CodeGenVisitor::visit(ReadNode& node){
 
 void CodeGenVisitor::visit(CallNode& node){
     if(node.line>0)os<<"    // line "<<node.line<<"\n";
-    os<<"    "<<node.subroutine_name<<"(";
+    os<<"    "<<toLower(node.subroutine_name)<<"(";
     for(size_t i=0;i<node.arguments.size();++i){
         if(auto ident = dynamic_cast<IdentifierNode*>(node.arguments[i].get())){
             if(array_dims.find(ident->name) != array_dims.end()){
                 os<<getVarName(ident->name);
-            } else if(in_subprogram && current_params.find(ident->name) != current_params.end()){
-                os<<ident->name;
+            } else if(in_subprogram && current_params.find(toLower(ident->name)) != current_params.end()){
+                os<<toLower(ident->name);
             } else {
                 os<<"&";
                 node.arguments[i]->accept(*this);
@@ -495,13 +495,14 @@ void CodeGenVisitor::visit(UnaryOpNode& node){
 }
 
 void CodeGenVisitor::visit(IdentifierNode& node){
-    if(!current_func_name.empty()&&node.name==current_func_name){
+    std::string lname = toLower(node.name);
+    if(!current_func_name.empty()&&lname==current_func_name){
         os<<current_func_ret_var;
-    }else if(in_subprogram&&current_params.find(node.name)!=current_params.end()){
+    }else if(in_subprogram&&current_params.find(lname)!=current_params.end()){
         if(array_dims.find(node.name)!=array_dims.end()){
             os<<getVarName(node.name);
         }else{
-            os<<"(*"<<node.name<<")";
+            os<<"(*"<<lname<<")";
         }
     }else{
         os<<getVarName(node.name);
@@ -591,12 +592,12 @@ void CodeGenVisitor::visit(ArrayAccessNode& node){
             node.indices[1]->accept(*this);
             os<<")";
         }
-    }else if(array_dims.find(node.array_name)!=array_dims.end()||(in_subprogram&&current_params.find(node.array_name)!=current_params.end())){
+    }else if(array_dims.find(node.array_name)!=array_dims.end()||(in_subprogram&&current_params.find(toLower(node.array_name))!=current_params.end())){
         os<<getVarName(node.array_name)<<"[";
         printFlattenedIndex(node.array_name, node.indices);
         os<<"]";
     }else{
-        os<<node.array_name<<"(";
+        os<<toLower(node.array_name)<<"(";
         for(size_t i=0; i<node.indices.size(); ++i){
             os<<"&";
             node.indices[i]->accept(*this);
