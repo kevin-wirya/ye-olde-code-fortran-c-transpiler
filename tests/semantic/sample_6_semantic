@@ -15,7 +15,7 @@ idx   id           obj          type      ref   nrm   lev   adr   link
 7     FILL         subroutine   VOID      1     1     0     0     0    
 8     SZ           variable     INTEGER   0     1     1     0     0    
 9     I            variable     INTEGER   0     1     1     4     8    
-10    A            array        INTEGER   1     1     1     8     9    
+10    B            array        INTEGER   1     1     1     8     9    
 
 [btab - Block Table]
 idx   name         last  lpar  psze  vsze
@@ -27,7 +27,7 @@ idx   name         last  lpar  psze  vsze
 idx   name         xtyp      etyp      eref  low   high  elsz  size
 -------------------------------------------------------------------
 0     ARR          INTEGER   INTEGER   0     1     5     4     20   
-1     A            INTEGER   INTEGER   0     1     10    4     40   
+1     B            INTEGER   INTEGER   0     1     10    4     40   
 ===============================================
 
 ====== DECORATED AST TREE VISUALIZATION ======
@@ -47,14 +47,14 @@ idx   name         xtyp      etyp      eref  low   high  elsz  size
 └── [SubroutineNode] FILL(A, SZ)
     ├── [ImplicitNoneNode]
     ├── [TypeDeclNode] INTEGER: SZ, I
-    ├── [ArrayDeclNode] INTEGER A(SZ)
+    ├── [ArrayDeclNode] INTEGER B(SZ)
     ├── [DoNode] Label:100, LoopVar:I
     │   ├── Start:
     │   │   └── [NumberLiteralNode] 1 (type: INTEGER)
     │   ├── End:
     │   │   └── [IdentifierNode] SZ (type: INTEGER)
     │   └── Body:
-    │       ├── [AssignNode] A(<index>) =
+    │       ├── [AssignNode] B(<index>) =
     │       │   ├── Indices:
     │       │   │   └── [IdentifierNode] I (type: INTEGER)
     │       │   └── Value:

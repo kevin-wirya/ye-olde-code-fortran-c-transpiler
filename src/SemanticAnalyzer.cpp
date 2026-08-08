@@ -182,6 +182,8 @@ void SemanticAnalyzer::visit(FunctionNode& node){
         Symbol sym(param,"UNKNOWN",SymbolKind::VARIABLE);
         symbol_table.declare(sym);
     }
+    Symbol ret_var_sym(node.name,node.returnType.empty()?"REAL":node.returnType,SymbolKind::VARIABLE);
+    symbol_table.declare(ret_var_sym);
     for(auto& stmt:node.body){
         if(stmt)stmt->accept(*this);
     }
@@ -201,8 +203,11 @@ void SemanticAnalyzer::visit(TypeDeclNode& node){
     for(const auto& var_name:node.variable_names){
         const Symbol* existing=symbol_table.lookupLocal(var_name);
         if(existing){
-            if(existing->type!="UNKNOWN")reportError("Redeclaration Error: Variable '" + var_name + "' is already declared in this scope");
-            else symbol_table.updateType(var_name,node.type_name);
+            if(existing->kind==SymbolKind::FUNCTION||existing->kind==SymbolKind::SUBROUTINE||existing->type==node.type_name||existing->type=="UNKNOWN"){
+                symbol_table.updateType(var_name,node.type_name);
+            }else{
+                reportError("Redeclaration Error: Variable '" + var_name + "' is already declared in this scope");
+            }
         }else{
             Symbol sym(var_name,node.type_name,SymbolKind::VARIABLE);
             symbol_table.declare(sym);

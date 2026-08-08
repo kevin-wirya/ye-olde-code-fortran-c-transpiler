@@ -14,14 +14,14 @@
 └── [SubroutineNode] FILL(A, SZ)
     ├── [ImplicitNoneNode]
     ├── [TypeDeclNode] INTEGER: SZ, I
-    ├── [ArrayDeclNode] INTEGER A(SZ)
+    ├── [ArrayDeclNode] INTEGER B(SZ)
     ├── [DoNode] Label:100, LoopVar:I
     │   ├── Start:
     │   │   └── [NumberLiteralNode] 1
     │   ├── End:
     │   │   └── [IdentifierNode] SZ
     │   └── Body:
-    │       ├── [AssignNode] A(<index>) =
+    │       ├── [AssignNode] B(<index>) =
     │       │   ├── Indices:
     │       │   │   └── [IdentifierNode] I
     │       │   └── Value:

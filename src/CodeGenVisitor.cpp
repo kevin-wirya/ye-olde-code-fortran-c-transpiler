@@ -68,6 +68,9 @@ void CodeGenVisitor::visit(ProgramNode& node){
             main_stmts.push_back(stmt.get());
         }
     }
+    global_subprogram_names.clear();
+    for(auto sub:subroutines) global_subprogram_names.insert(toLower(sub->name));
+    for(auto func:functions) global_subprogram_names.insert(toLower(func->name));
     for(auto func:functions){
         std::string func_ret=func->returnType;
         if(func_ret.empty()){
@@ -212,10 +215,18 @@ void CodeGenVisitor::visit(FunctionNode& node){
             }
         }
     }
+    bool ends_with_return = false;
+    if(!node.body.empty()){
+        if(dynamic_cast<ReturnNode*>(node.body.back().get())) {
+            ends_with_return = true;
+        }
+    }
     for(auto& stmt:node.body){
         if(stmt) stmt->accept(*this);
     }
-    os<<"    return "<<current_func_ret_var<<";\n";
+    if(!ends_with_return){
+        os<<"    return "<<current_func_ret_var<<";\n";
+    }
     os<<"}\n\n";
     in_subprogram=false;
     current_params.clear();
@@ -230,7 +241,7 @@ void CodeGenVisitor::visit(ImplicitNoneNode& node){
 void CodeGenVisitor::visit(TypeDeclNode& node){
     std::vector<std::string> local_vars;
     for(const auto& v:node.variable_names){
-        if(current_params.find(v)==current_params.end()){
+        if(current_params.find(toLower(v))==current_params.end()&&global_subprogram_names.find(toLower(v))==global_subprogram_names.end()){
             bool is_common=false;
             if(common_blocks){
                 for(const auto& pair:*common_blocks){
@@ -280,6 +291,23 @@ void CodeGenVisitor::visit(TypeDeclNode& node){
 }
 
 void CodeGenVisitor::visit(ArrayDeclNode& node){
+    std::vector<std::string> dims;
+    int total_size=1;
+    for(const auto& dim:node.dimensions){
+        try{
+            total_size*=std::stoi(dim.upper_bound);
+        }catch(...){
+            total_size*=10;
+        }
+        dims.push_back(dim.upper_bound);
+    }
+    array_dims[node.array_name]=dims;
+    array_dims[toLower(node.array_name)]=dims;
+
+    if(in_subprogram && current_params.find(toLower(node.array_name)) != current_params.end()){
+        return;
+    }
+
     if(node.line>0)os<<"    // line "<<node.line<<"\n";
     std::string ctype="int";
     int char_len=-1;
@@ -292,18 +320,8 @@ void CodeGenVisitor::visit(ArrayDeclNode& node){
             char_len=std::stoi(node.type_name.substr(10));
         }
         string_lengths[node.array_name]=char_len;
+        string_lengths[toLower(node.array_name)]=char_len;
     }
-    int total_size=1;
-    std::vector<std::string> dims;
-    for(const auto& dim:node.dimensions){
-        try{
-            total_size*=std::stoi(dim.upper_bound);
-        }catch(...){
-            total_size*=10;
-        }
-        dims.push_back(dim.upper_bound);
-    }
-    array_dims[node.array_name]=dims;
     if(char_len>0){
         os<<"    "<<ctype<<" "<<getVarName(node.array_name)<<"["<<total_size<<"]["<<(char_len+1)<<"];\n";
     }else{

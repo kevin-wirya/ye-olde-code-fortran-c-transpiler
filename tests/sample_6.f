@@ -11,9 +11,9 @@ C     SUBROUTINE with array
       SUBROUTINE FILL(A, SZ)
       IMPLICIT NONE
       INTEGER SZ, I
-      INTEGER A(SZ)
+      INTEGER B(SZ)
       DO 100 I = 1, SZ
-          A(I) = I * 10
+          B(I) = I * 10
   100 CONTINUE
       RETURN
       END
