@@ -21,7 +21,6 @@ int main(void){
     for(i=1; i<=n; i+=1){
     // line 8
     printf("%d\n", i);
-label_10:;
     }
     return 0;
 }

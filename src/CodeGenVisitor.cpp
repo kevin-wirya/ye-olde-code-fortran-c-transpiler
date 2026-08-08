@@ -22,9 +22,39 @@ void CodeGenVisitor::collectReferencedLabels(ASTNode* node){
     }
 }
 
+bool CodeGenVisitor::hasStringVars(ASTNode* node){
+    if(!node) return false;
+    if(auto tnode=dynamic_cast<TypeDeclNode*>(node)){
+        if(tnode->type_name.rfind("CHARACTER",0)==0) return true;
+    }else if(auto anode=dynamic_cast<ArrayDeclNode*>(node)){
+        if(anode->type_name.rfind("CHARACTER",0)==0) return true;
+    }else if(auto p=dynamic_cast<ProgramNode*>(node)){
+        for(auto& s:p->body) if(hasStringVars(s.get())) return true;
+    }else if(auto sub=dynamic_cast<SubroutineNode*>(node)){
+        for(auto& s:sub->body) if(hasStringVars(s.get())) return true;
+    }else if(auto fn=dynamic_cast<FunctionNode*>(node)){
+        for(auto& s:fn->body) if(hasStringVars(s.get())) return true;
+    }else if(auto ifn=dynamic_cast<IfNode*>(node)){
+        for(auto& s:ifn->then_body) if(hasStringVars(s.get())) return true;
+        for(auto& s:ifn->else_body) if(hasStringVars(s.get())) return true;
+    }else if(auto don=dynamic_cast<DoNode*>(node)){
+        for(auto& s:don->body) if(hasStringVars(s.get())) return true;
+    }
+    return false;
+}
+
 void CodeGenVisitor::visit(ProgramNode& node){
     referenced_labels.clear();
     collectReferencedLabels(&node);
+    if(hasStringVars(&node)){
+        os<<"#define F77_STR_ASSIGN(dest, src, len) \\\n";
+        os<<"    do { \\\n";
+        os<<"        strncpy(dest, src, len); \\\n";
+        os<<"        int _l = strlen(src); \\\n";
+        os<<"        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \\\n";
+        os<<"        dest[len] = '\\0'; \\\n";
+        os<<"    } while(0)\n\n";
+    }
     std::vector<ASTNode*> main_stmts;
     std::vector<SubroutineNode*> subroutines;
     std::vector<FunctionNode*> functions;

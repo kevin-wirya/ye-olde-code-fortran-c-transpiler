@@ -94,13 +94,6 @@ class CodeGenVisitor: public ASTVisitor{
             os<<"#include <stdlib.h>\n";
             os<<"#include <stdbool.h>\n";
             os<<"#include <string.h>\n\n";
-            os<<"#define F77_STR_ASSIGN(dest, src, len) \\\n";
-            os<<"    do { \\\n";
-            os<<"        strncpy(dest, src, len); \\\n";
-            os<<"        int _l = strlen(src); \\\n";
-            os<<"        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \\\n";
-            os<<"        dest[len] = '\\0'; \\\n";
-            os<<"    } while(0)\n\n";
             if(common_blocks){
                 for(const auto& pair: *common_blocks){
                     os<<"struct "<<toLower(pair.first)<<"_t {\n";
@@ -115,6 +108,7 @@ class CodeGenVisitor: public ASTVisitor{
         std::unordered_map<std::string, int> string_lengths;
         std::unordered_set<int> emitted_labels;
         std::unordered_set<int> referenced_labels;
+        bool hasStringVars(ASTNode* node);
         void collectReferencedLabels(ASTNode* node);
         void printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices);
         void visit(ProgramNode& node) override;
