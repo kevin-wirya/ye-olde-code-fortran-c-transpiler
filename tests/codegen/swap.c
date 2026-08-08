@@ -4,15 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
-void ORDER(int* A, int* B, bool* FLAG);
+void order(int* a, int* b, bool* flag);
 
 int main(void){
     // line 3
@@ -26,7 +18,7 @@ int main(void){
     // line 8
     swapped = false;
     // line 10
-    ORDER(&x, &y, &swapped);
+    order(&x, &y, &swapped);
     // line 12
     if(swapped){
     // line 13
@@ -40,22 +32,22 @@ int main(void){
     return 0;
 }
 
-void ORDER(int* A, int* B, bool* FLAG){
+void order(int* a, int* b, bool* flag){
     // line 26
     int temp;
     // line 28
-    if(((*A) > (*B))){
+    if(((*a) > (*b))){
     // line 29
-    temp = (*A);
+    temp = (*a);
     // line 30
-    (*A) = (*B);
+    (*a) = (*b);
     // line 31
-    (*B) = temp;
+    (*b) = temp;
     // line 32
-    (*FLAG) = true;
+    (*flag) = true;
     } else {
     // line 34
-    (*FLAG) = false;
+    (*flag) = false;
     }
     // line 37
     return;

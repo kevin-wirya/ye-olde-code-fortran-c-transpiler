@@ -95,6 +95,7 @@ void CodeGenVisitor::visit(ProgramNode& node){
         os<<");\n";
     }
     if(!functions.empty()||!subroutines.empty()) os<<"\n";
+    scanCommonBlocks(node.body);
     os<<"int main(void){\n";
     if(tab){
         for(const auto& entry:*tab){
@@ -132,6 +133,7 @@ void CodeGenVisitor::visit(ProgramNode& node){
 
 void CodeGenVisitor::visit(SubroutineNode& node){
     in_subprogram=true;
+    scanCommonBlocks(node.body);
     current_params.clear();
     for(const auto& p:node.parameters){
         current_params.insert(toLower(p));
@@ -174,6 +176,7 @@ void CodeGenVisitor::visit(SubroutineNode& node){
 
 void CodeGenVisitor::visit(FunctionNode& node){
     in_subprogram=true;
+    scanCommonBlocks(node.body);
     current_params.clear();
     for(const auto& p:node.parameters){
         current_params.insert(toLower(p));
@@ -242,18 +245,7 @@ void CodeGenVisitor::visit(TypeDeclNode& node){
     std::vector<std::string> local_vars;
     for(const auto& v:node.variable_names){
         if(current_params.find(toLower(v))==current_params.end()&&global_subprogram_names.find(toLower(v))==global_subprogram_names.end()){
-            bool is_common=false;
-            if(common_blocks){
-                for(const auto& pair:*common_blocks){
-                    for(const auto& cb_var:pair.second.variable_names){
-                        if(toLower(cb_var)==toLower(v)){
-                            is_common=true;
-                            break;
-                        }
-                    }
-                    if(is_common)break;
-                }
-            }
+            bool is_common=isCommonVar(v);
             if(!is_common){
                 local_vars.push_back(v);
             }

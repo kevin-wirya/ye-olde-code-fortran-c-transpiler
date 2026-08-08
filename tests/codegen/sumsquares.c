@@ -4,20 +4,12 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
 struct acc_t {
     int runtotal;
     int callcnt;
 } acc;
 
-void ADDSQUARE(int* VAL);
+void addsquare(int* val);
 
 int main(void){
     // line 3
@@ -31,8 +23,7 @@ int main(void){
     // line 12
     for(i=1; i<=n; i+=1){
     // line 13
-    ADDSQUARE(&i);
-label_10:;
+    addsquare(&i);
     }
     // line 16
     printf("%d\n", acc.runtotal);
@@ -41,13 +32,11 @@ label_10:;
     return 0;
 }
 
-void ADDSQUARE(int* VAL){
-    // line 26
-    int total, cnt;
+void addsquare(int* val){
     // line 28
-    total = (total + ((*VAL) * (*VAL)));
+    acc.runtotal = (acc.runtotal + ((*val) * (*val)));
     // line 29
-    cnt = (cnt + 1);
+    acc.callcnt = (acc.callcnt + 1);
     // line 31
     return;
 }

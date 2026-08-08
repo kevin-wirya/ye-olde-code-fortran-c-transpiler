@@ -4,19 +4,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
 struct stats_t {
     int count;
 } stats;
 
-float CALCAREA(float* RADIUS);
+float calcarea(float* radius);
 
 int main(void){
     // line 3
@@ -26,13 +18,13 @@ int main(void){
     // line 9
     r = 2.0;
     // line 10
-    area1 = CALCAREA(&r);
+    area1 = calcarea(&r);
     // line 11
     printf("%f\n", area1);
     // line 13
     r = 3.0;
     // line 14
-    area2 = CALCAREA(&r);
+    area2 = calcarea(&r);
     // line 15
     printf("%f\n", area2);
     // line 17
@@ -44,16 +36,13 @@ int main(void){
     return 0;
 }
 
-float CALCAREA(float* RADIUS){
-    float CALCAREA_val;
-    // line 26
-    int cnt;
+float calcarea(float* radius){
+    float calcarea_val;
     // line 29
-    CALCAREA_val = ((3.14159 * (*RADIUS)) * (*RADIUS));
+    calcarea_val = ((3.14159 * (*radius)) * (*radius));
     // line 30
-    cnt = (cnt + 1);
+    stats.count = (stats.count + 1);
     // line 32
-    return CALCAREA_val;
-    return CALCAREA_val;
+    return calcarea_val;
 }
 

@@ -4,14 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define F77_STR_ASSIGN(dest, src, len) \
-    do { \
-        strncpy(dest, src, len); \
-        int _l = strlen(src); \
-        for(int _i = _l; _i < len; _i++) dest[_i] = ' '; \
-        dest[len] = '\0'; \
-    } while(0)
-
 struct state_t {
     bool done;
 } state;
@@ -40,7 +32,6 @@ int main(void){
     // line 19
     goto label_999;
     }
-label_50:;
     }
 label_999:;
     // line 24

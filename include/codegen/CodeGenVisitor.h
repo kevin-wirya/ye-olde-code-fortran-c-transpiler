@@ -46,12 +46,31 @@ class CodeGenVisitor: public ASTVisitor{
             std::transform(s.begin(), s.end(), s.begin(), ::tolower);
             return s;
         }
-
+        std::unordered_map<std::string, std::string> common_var_map;
+        void scanCommonBlocks(const std::vector<std::unique_ptr<ASTNode>>& body) {
+            common_var_map.clear();
+            if (!common_blocks) return;
+            for (const auto& stmt : body) {
+                if (auto cb_node = dynamic_cast<CommonBlockNode*>(stmt.get())) {
+                    std::string bname = toLower(cb_node->block_name);
+                    for (const auto& pair : *common_blocks) {
+                        if (toLower(pair.first) == bname) {
+                            const auto& struct_vars = pair.second.variable_names;
+                            for (size_t i = 0; i < cb_node->variable_names.size() && i < struct_vars.size(); ++i) {
+                                common_var_map[toLower(cb_node->variable_names[i])] = bname + "." + toLower(struct_vars[i]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         bool isCommonVar(const std::string& v) const{
-            if (common_blocks) {
-                for (const auto& pair : *common_blocks) {
-                    for (const auto& cb_var : pair.second.variable_names) {
-                        if (toLower(cb_var) == toLower(v)) return true;
+            std::string lv=toLower(v);
+            if(common_var_map.find(lv)!=common_var_map.end())return true;
+            if(common_blocks) {
+                for(const auto& pair: *common_blocks){
+                    for(const auto& cb_var: pair.second.variable_names){
+                        if(toLower(cb_var)==lv)return true;
                     }
                 }
             }
@@ -59,16 +78,21 @@ class CodeGenVisitor: public ASTVisitor{
         }
 
         std::string getVarName(const std::string& name) const {
-            if (common_blocks) {
-                for (const auto& pair : *common_blocks) {
-                    for (const auto& var : pair.second.variable_names) {
-                        if (toLower(var) == toLower(name)) {
-                            return toLower(pair.first) + "." + toLower(name);
+            std::string lname = toLower(name);
+            auto it = common_var_map.find(lname);
+            if(it!=common_var_map.end()){
+                return it->second;
+            }
+            if(common_blocks){
+                for(const auto& pair:*common_blocks){
+                    for(const auto& var: pair.second.variable_names){
+                        if(toLower(var)==lname){
+                            return toLower(pair.first)+"."+lname;
                         }
                     }
                 }
             }
-            return toLower(name);
+            return lname;
         }
 
         std::string getCType(const std::string& name) const{
