@@ -12,22 +12,34 @@
         dest[len] = '\0'; \
     } while(0)
 
+void FILL(int* A, int* SZ);
+
 int main(void){
     // line 5
-    float x, y, z;
+    int arr[5];
     // line 6
-    x = 2.5E1;
+    int n;
     // line 7
-    y = 3.0D-1;
+    n = 5;
     // line 8
-    z = ((pow(x, 2) + ((y * 5.0) / 2.0)) - 1.0);
+    FILL(arr, &n);
     // line 9
-    printf("%f\n", z);
-    // line 10
-    goto label_99;
-    // line 11
-    printf("%s\n", "This is skipped");
-label_99:;
+    printf("%d\n", arr[(1 - 1)]);
     return 0;
+}
+
+void FILL(int* A, int* SZ){
+    // line 14
+    int i;
+    // line 15
+    int a[10];
+    // line 16
+    for(i=1; i<=(*SZ); i+=1){
+    // line 17
+    a[(i - 1)] = (i * 10);
+label_100:;
+    }
+    // line 19
+    return;
 }
 

@@ -14,32 +14,29 @@
 
 int main(void){
     // line 3
-    int I;
+    int i;
     // line 4
-    I = 2;
+    i = 2;
     // line 5
-    switch(I){
+    switch(i){
         case 1: goto label_10; break;
         case 2: goto label_20; break;
         case 3: goto label_30; break;
     }
-    // line 6
 label_10:;
     // line 7
     printf("%d\n", 100);
     // line 8
     goto label_40;
-    // line 9
 label_20:;
     // line 10
     printf("%d\n", 200);
     // line 11
     goto label_40;
-    // line 12
 label_30:;
     // line 13
     printf("%d\n", 300);
-    // line 14
 label_40:;
     return 0;
 }
+

@@ -219,9 +219,16 @@ void SemanticAnalyzer::visit(TypeDeclNode& node){
 }
 
 void SemanticAnalyzer::visit(ArrayDeclNode& node){
-    Symbol sym(node.array_name,node.type_name,SymbolKind::ARRAY);
-    sym.dimensions=node.dimensions;
-    if(!symbol_table.declare(sym))reportError("Redeclaration Error: Array '" + node.array_name + "' is already declared in this scope");
+    const Symbol* existing=symbol_table.lookupLocal(node.array_name);
+    if(existing && existing->type!="UNKNOWN" && existing->kind!=SymbolKind::FUNCTION && existing->kind!=SymbolKind::SUBROUTINE){
+        reportError("Redeclaration Error: Array '" + node.array_name + "' is already declared in this scope");
+    }else if(existing){
+        symbol_table.updateType(node.array_name,node.type_name);
+    }else{
+        Symbol sym(node.array_name,node.type_name,SymbolKind::ARRAY);
+        sym.dimensions=node.dimensions;
+        symbol_table.declare(sym);
+    }
     int total_elems=1;
     int high_val=1;
     for(const auto& dim:node.dimensions){
@@ -244,10 +251,13 @@ void SemanticAnalyzer::visit(ArrayDeclNode& node){
 
 void SemanticAnalyzer::visit(CommonBlockNode& node){
     for(const auto& var_name:node.variable_names){
-        Symbol sym(var_name,"UNKNOWN",SymbolKind::VARIABLE);
-        sym.is_common=true;
-        sym.common_block_name=node.block_name;
-        symbol_table.declare(sym);
+        const Symbol* existing = symbol_table.lookupLocal(var_name);
+        if(!existing){
+            Symbol sym(var_name,"UNKNOWN",SymbolKind::VARIABLE);
+            sym.is_common=true;
+            sym.common_block_name=node.block_name;
+            symbol_table.declare(sym);
+        }
     }
     auto it=global_common_blocks.find(node.block_name);
     if(it==global_common_blocks.end()){

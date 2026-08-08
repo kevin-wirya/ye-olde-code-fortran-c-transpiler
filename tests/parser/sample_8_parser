@@ -10,7 +10,7 @@
 │           └── [IdentifierNode] N
 ├── [PrintNode] Format: *
 │   └── [IdentifierNode] RES
-└── [FunctionNode] MYFUNC -> REAL(VAL)
+└── [FunctionNode] MYFUNC -> INTEGER(VAL)
     ├── [ImplicitNoneNode]
     ├── [TypeDeclNode] INTEGER: MYFUNC, VAL
     ├── [AssignNode] MYFUNC =

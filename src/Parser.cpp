@@ -298,7 +298,6 @@ std::unique_ptr<ASTNode> Parser::parseDo(){
                     advance();
                     if(match(TokenType::CONTINUE))body.push_back(std::make_unique<ContinueNode>(target_label));
                 } else body.push_back(std::make_unique<ContinueNode>(target_label));
-                }
                 active_do_labels.pop_back();
                 break;
             }

@@ -50,7 +50,7 @@ idx   name         xtyp      etyp      eref  low   high  elsz  size
     ├── Then:
     │   ├── [AssignNode] RESULT =
     │   │   └── Value:
-    │   │       └── [UnaryOpNode] .FALSE. (type: STRING)
+    │   │       └── [UnaryOpNode] .NOT. (type: LOGICAL)
     │   │           └── [StringLiteralNode] .FALSE. (type: STRING)
     │   └── [PrintNode] Format: *
     │       └── [StringLiteralNode] 'A is less than B' (type: STRING)

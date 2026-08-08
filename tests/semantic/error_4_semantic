@@ -1,2 +1,2 @@
 ====== SEMANTIC ERRORS ======
-[Error] Arity Error: Subroutine 'FOO' was called with 1 argument(s), but defined with 2 parameter(s)
+[Error] Arity Error: Subroutine 'FOO' expects 2 arguments, but got 1

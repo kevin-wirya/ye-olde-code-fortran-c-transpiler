@@ -1,2 +1,30 @@
-====== SEMANTIC ERRORS ======
-[Error] Semantic Error: IMPLICIT NONE is required in PROGRAM 'hello'
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     hello        program      VOID      0     1     0     0     0    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     hello        0     0     0     0    
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+(empty)
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] hello
+├── [ImplicitNoneNode]
+└── [PrintNode] Format: *
+    └── [StringLiteralNode] 'Hello, World!' (type: STRING)
+===============================================

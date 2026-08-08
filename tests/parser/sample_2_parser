@@ -1,3 +1,4 @@
 [ProgramNode] hello
+├── [ImplicitNoneNode]
 └── [PrintNode] Format: *
     └── [StringLiteralNode] 'Hello, World!'

@@ -1,2 +1,66 @@
-====== SEMANTIC ERRORS ======
-[Error] Redeclaration Error: Array 'A' is already declared in this scope
+Semantic Analysis SUCCESS: No errors found.
+
+====== SYMBOL TABLES (tab, btab, atab) ======
+
+[tab - Identifier Table]
+idx   id           obj          type      ref   nrm   lev   adr   link
+-----------------------------------------------------------------------
+0     INTEGER      type         INTEGER   0     1     0     0     0    
+1     REAL         type         REAL      0     1     0     0     0    
+2     LOGICAL      type         LOGICAL   0     1     0     0     0    
+3     CHARACTER    type         CHARACTER 0     1     0     0     0    
+4     TEST6        program      VOID      0     1     0     0     0    
+5     ARR          array        INTEGER   0     1     0     0     0    
+6     N            variable     INTEGER   0     1     0     20    5    
+7     FILL         subroutine   VOID      1     1     0     0     0    
+8     SZ           variable     INTEGER   0     1     1     0     0    
+9     I            variable     INTEGER   0     1     1     4     8    
+10    A            array        INTEGER   1     1     1     8     9    
+
+[btab - Block Table]
+idx   name         last  lpar  psze  vsze
+-----------------------------------------
+0     TEST6        6     0     0     24   
+1     FILL         10    0     0     48   
+
+[atab - Array Table]
+idx   name         xtyp      etyp      eref  low   high  elsz  size
+-------------------------------------------------------------------
+0     ARR          INTEGER   INTEGER   0     1     5     4     20   
+1     A            INTEGER   INTEGER   0     1     10    4     40   
+===============================================
+
+====== DECORATED AST TREE VISUALIZATION ======
+[ProgramNode] TEST6
+├── [ImplicitNoneNode]
+├── [ArrayDeclNode] INTEGER ARR(5)
+├── [TypeDeclNode] INTEGER: N
+├── [AssignNode] N =
+│   └── Value:
+│       └── [NumberLiteralNode] 5 (type: INTEGER)
+├── [CallNode] Subroutine: FILL
+│   ├── [IdentifierNode] ARR (type: INTEGER)
+│   └── [IdentifierNode] N (type: INTEGER)
+├── [PrintNode] Format: *
+│   └── [ArrayAccessNode] ARR (type: INTEGER)
+│       └── [NumberLiteralNode] 1 (type: INTEGER)
+└── [SubroutineNode] FILL(A, SZ)
+    ├── [ImplicitNoneNode]
+    ├── [TypeDeclNode] INTEGER: SZ, I
+    ├── [ArrayDeclNode] INTEGER A(SZ)
+    ├── [DoNode] Label:100, LoopVar:I
+    │   ├── Start:
+    │   │   └── [NumberLiteralNode] 1 (type: INTEGER)
+    │   ├── End:
+    │   │   └── [IdentifierNode] SZ (type: INTEGER)
+    │   └── Body:
+    │       ├── [AssignNode] A(<index>) =
+    │       │   ├── Indices:
+    │       │   │   └── [IdentifierNode] I (type: INTEGER)
+    │       │   └── Value:
+    │       │       └── [BinaryOpNode] * (type: INTEGER)
+    │       │           ├── [IdentifierNode] I (type: INTEGER)
+    │       │           └── [NumberLiteralNode] 10 (type: INTEGER)
+    │       └── [ContinueNode] Label: 100
+    └── [ReturnNode]
+===============================================

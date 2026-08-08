@@ -21,7 +21,7 @@
     ├── Then:
     │   ├── [AssignNode] RESULT =
     │   │   └── Value:
-    │   │       └── [UnaryOpNode] .FALSE.
+    │   │       └── [UnaryOpNode] .NOT.
     │   │           └── [StringLiteralNode] .FALSE.
     │   └── [PrintNode] Format: *
     │       └── [StringLiteralNode] 'A is less than B'

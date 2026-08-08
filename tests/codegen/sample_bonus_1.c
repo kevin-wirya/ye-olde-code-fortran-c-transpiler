@@ -14,16 +14,17 @@
 
 int main(void){
     // line 3
-    char A[11];
-    A[0] = '\0';
+    char a[11];
+    a[0] = '\0';
     // line 4
-    char B[6];
-    B[0] = '\0';
+    char b[6];
+    b[0] = '\0';
     // line 5
-    F77_STR_ASSIGN(A, "HELLO", 10);
+    F77_STR_ASSIGN(a, "HELLO", 10);
     // line 6
-    F77_STR_ASSIGN(B, "WORLD", 5);
+    F77_STR_ASSIGN(b, "WORLD", 5);
     // line 7
-    printf("%s %s\n", A, B);
+    printf("%s %s\n", a, b);
     return 0;
 }
+

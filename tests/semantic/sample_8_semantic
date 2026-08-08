@@ -13,7 +13,7 @@ idx   id           obj          type      ref   nrm   lev   adr   link
 5     RES          variable     INTEGER   0     1     0     0     0    
 6     MYFUNC       variable     INTEGER   0     1     0     4     5    
 7     N            variable     INTEGER   0     1     0     8     6    
-8     MYFUNC       function     REAL      1     1     0     0     0    
+8     MYFUNC       function     INTEGER   1     1     0     0     0    
 9     MYFUNC       variable     INTEGER   0     1     1     0     0    
 10    VAL          variable     INTEGER   0     1     1     4     9    
 
@@ -42,7 +42,7 @@ idx   name         xtyp      etyp      eref  low   high  elsz  size
 │           └── [IdentifierNode] N (type: INTEGER)
 ├── [PrintNode] Format: *
 │   └── [IdentifierNode] RES (type: INTEGER)
-└── [FunctionNode] MYFUNC -> REAL(VAL)
+└── [FunctionNode] MYFUNC -> INTEGER(VAL)
     ├── [ImplicitNoneNode]
     ├── [TypeDeclNode] INTEGER: MYFUNC, VAL
     ├── [AssignNode] MYFUNC =
