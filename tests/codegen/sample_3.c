@@ -23,9 +23,7 @@ int main(void){
     for(j=1; j<=3; j+=1){
     // line 9
     matrix[(((i)-1)+((j)-1)*3)] = (i * j);
-label_20:;
     }
-label_10:;
     }
     // line 12
     printf("%s\n", "Matrix init done");

@@ -114,6 +114,8 @@ class CodeGenVisitor: public ASTVisitor{
         std::unordered_map<std::string, std::vector<std::string>> array_dims;
         std::unordered_map<std::string, int> string_lengths;
         std::unordered_set<int> emitted_labels;
+        std::unordered_set<int> referenced_labels;
+        void collectReferencedLabels(ASTNode* node);
         void printFlattenedIndex(const std::string& array_name, const std::vector<std::unique_ptr<ASTNode>>& indices);
         void visit(ProgramNode& node) override;
         void visit(SubroutineNode& node) override;

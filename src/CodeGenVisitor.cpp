@@ -1,6 +1,30 @@
 #include "codegen/CodeGenVisitor.h"
 
+void CodeGenVisitor::collectReferencedLabels(ASTNode* node){
+    if(!node)return;
+    if(auto g=dynamic_cast<GotoNode*>(node)){
+        referenced_labels.insert(g->target_label);
+    }else if(auto cg=dynamic_cast<ComputedGotoNode*>(node)){
+        for(int lbl:cg->labels){
+            referenced_labels.insert(lbl);
+        }
+    }else if(auto p=dynamic_cast<ProgramNode*>(node)){
+        for(auto& s:p->body)collectReferencedLabels(s.get());
+    }else if(auto sub=dynamic_cast<SubroutineNode*>(node)){
+        for(auto& s:sub->body)collectReferencedLabels(s.get());
+    }else if(auto fn=dynamic_cast<FunctionNode*>(node)){
+        for(auto& s:fn->body)collectReferencedLabels(s.get());
+    }else if(auto ifn=dynamic_cast<IfNode*>(node)){
+        for(auto& s:ifn->then_body)collectReferencedLabels(s.get());
+        for(auto& s:ifn->else_body)collectReferencedLabels(s.get());
+    }else if(auto don=dynamic_cast<DoNode*>(node)){
+        for(auto& s:don->body)collectReferencedLabels(s.get());
+    }
+}
+
 void CodeGenVisitor::visit(ProgramNode& node){
+    referenced_labels.clear();
+    collectReferencedLabels(&node);
     std::vector<ASTNode*> main_stmts;
     std::vector<SubroutineNode*> subroutines;
     std::vector<FunctionNode*> functions;
@@ -431,7 +455,7 @@ void CodeGenVisitor::visit(ReturnNode& node){
 }
 
 void CodeGenVisitor::visit(ContinueNode& node){
-    if (emitted_labels.find(node.label) == emitted_labels.end()) {
+    if(referenced_labels.count(node.label)>0&&emitted_labels.find(node.label)==emitted_labels.end()){
         if(node.line>0)os<<"    // line "<<node.line<<"\n";
         os<<"label_"<<node.label<<":;\n";
         emitted_labels.insert(node.label);
