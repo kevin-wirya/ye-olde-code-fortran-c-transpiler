@@ -389,8 +389,9 @@ std::unique_ptr<ASTNode> Parser::parseLogicalAnd(){
 
 std::unique_ptr<ASTNode> Parser::parseLogicalNot(){
     if(match(TokenType::DOT_NOT)){
+        std::string op=previous().lexeme;
         auto right=parseLogicalNot();
-        return std::make_unique<UnaryOpNode>(previous().lexeme,std::move(right));
+        return std::make_unique<UnaryOpNode>(op,std::move(right));
     }
     return parseRelational();
 }
